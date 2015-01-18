@@ -1,0 +1,38 @@
+{
+    "analysis": {
+        "filter": {
+            "url_protocol": {
+                "type": "url",
+                "part": "protocol"
+            },
+            "url_host": {
+                "type": "url",
+                "part": "host"
+            },
+            "url_port": {
+                "type": "url",
+                "part": "port"
+            }
+        },
+        "analyzer": {
+            "url_protocol": {
+                "filter": [
+                    "url_protocol"
+                ],
+                "tokenizer": "whitespace"
+            },
+            "url_host": {
+                "filter": [
+                    "url_host"
+                ],
+                "tokenizer": "whitespace"
+            },
+            "url_port": {
+                "filter": [
+                    "url_port"
+                ],
+                "tokenizer": "whitespace"
+            }
+        }
+    }
+}
