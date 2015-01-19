@@ -54,3 +54,18 @@ Set up your index like so:
     }
 }
 ```
+
+Make an anlysis request:
+```bash
+curl 'http://localhost:9200/index_name/_analyze?analyzer=url_host&pretty' -d 'https://foo.bar.com/baz.html'
+
+{
+  "tokens" : [ {
+    "token" : "foo.bar.com",
+    "start_offset" : 0,
+    "end_offset" : 32,
+    "type" : "word",
+    "position" : 1
+  } ]
+}
+```
