@@ -15,16 +15,18 @@ import org.elasticsearch.index.settings.IndexSettings;
 @AnalysisSettingsRequired
 public class URLTokenFilterFactory extends AbstractTokenFilterFactory {
     private final URLPart part;
+    private final boolean urlDecode;
 
     @Inject
     public URLTokenFilterFactory(Index index, @IndexSettings Settings indexSettings, @Assisted String name, @Assisted Settings settings) {
         super(index, indexSettings, name, settings);
 
         this.part = URLPart.fromString(settings.get("part", "whole"));
+        this.urlDecode = settings.getAsBoolean("url_decode", false);
     }
 
     @Override
     public TokenStream create(TokenStream tokenStream) {
-        return new URLTokenFilter(tokenStream, part);
+        return new URLTokenFilter(tokenStream, part, urlDecode);
     }
 }

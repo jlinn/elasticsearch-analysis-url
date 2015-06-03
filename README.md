@@ -9,6 +9,7 @@ This plugin enables URL token filtering by URL part.
 
 | Elasticsearch Version | Plugin Version |
 |-----------------------|----------------|
+| 1.5.2 | 1.1.0 |
 | 1.4.2 | 1.0.0 |
 
 ## Installation
@@ -17,8 +18,10 @@ bin/plugin --install analysis-url --url https://github.com/jlinn/elasticsearch-a
 ```
 
 ## Usage
-This filter only has one option: `part`. This option defaults to `whole`, which will cause the entire URL to be returned. In this case, the filter only serves to validate incoming URLs. Other possible values are:
+Options:
+* `part`: This option defaults to `whole`, which will cause the entire URL to be returned. In this case, the filter only serves to validate incoming URLs. Other possible values are:
 `protocol`, `host`, `port`, `path`, `query`, and `ref`.
+* `url_decode`: Defaults to `false`. If `true`, the desired portion of the URL will be url decoded.
 
 Set up your index like so:
 ```json
@@ -28,7 +31,8 @@ Set up your index like so:
             "filter": {
                 "url_host": {
                     "type": "url",
-                    "part": "host"
+                    "part": "host",
+                    "url_decode": true
                 }
             },
             "analyzer": {

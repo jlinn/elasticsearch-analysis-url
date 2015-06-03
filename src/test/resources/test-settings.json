@@ -12,6 +12,11 @@
             "url_port": {
                 "type": "url",
                 "part": "port"
+            },
+            "url_query": {
+                "type": "url",
+                "part": "query",
+                "url_decode": true
             }
         },
         "analyzer": {
@@ -30,6 +35,12 @@
             "url_port": {
                 "filter": [
                     "url_port"
+                ],
+                "tokenizer": "whitespace"
+            },
+            "url_query": {
+                "filter": [
+                    "url_query"
                 ],
                 "tokenizer": "whitespace"
             }

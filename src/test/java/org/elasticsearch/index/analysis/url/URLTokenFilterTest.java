@@ -60,12 +60,21 @@ public class URLTokenFilterTest extends BaseTokenStreamTestCase {
         filter.incrementToken();
     }
 
+    @Test
+    public void testUrlDecode() throws IOException {
+        assertTokenStreamContents(createFilter("https://www.foo.com?email=foo%40bar.com", URLPart.QUERY, true), "email=foo@bar.com");
+    }
+
     private URLTokenFilter createFilter(final String url, final URLPart part) {
+        return createFilter(url, part, false);
+    }
+
+    private URLTokenFilter createFilter(final String url, final URLPart part, final boolean urlDecode) {
         int length = 0;
         if (url != null) {
             length = url.length();
         }
-        return new URLTokenFilter(new SingleTokenTokenStream(new Token(url, 0, length)), part);
+        return new URLTokenFilter(new SingleTokenTokenStream(new Token(url, 0, length)), part, urlDecode);
     }
 
     private static void assertTokenStreamContents(TokenStream in, String output) throws IOException {

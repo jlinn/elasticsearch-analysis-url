@@ -55,6 +55,11 @@ public class URLTokenFilterIntegrationTest extends ElasticsearchSingleNodeTest {
         assertThat("no tokens", tokens, hasSize(0));
     }
 
+    @Test
+    public void testUrlDecode() {
+        assertURLAnalyzesTo("https://foo.bar.com?email=foo%40bar.com", "url_query", "email=foo@bar.com");
+    }
+
     private void refresh() {
         client().admin().indices().prepareRefresh().get();
     }
@@ -62,7 +67,7 @@ public class URLTokenFilterIntegrationTest extends ElasticsearchSingleNodeTest {
     private void assertURLAnalyzesTo(String url, String analyzer, String expected) {
         List<AnalyzeResponse.AnalyzeToken> tokens = analyzeURL(url, analyzer);
         assertThat("a URL part was parsed", tokens, hasSize(1));
-        assertEquals("term value", tokens.get(0).getTerm(), expected);
+        assertEquals("term value", expected, tokens.get(0).getTerm());
     }
 
     private List<AnalyzeResponse.AnalyzeToken> analyzeURL(String url, String analyzer) {

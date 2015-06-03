@@ -8,6 +8,7 @@ import org.elasticsearch.index.analysis.URLPart;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLDecoder;
 
 /**
  * Joe Linn
@@ -18,11 +19,18 @@ public final class URLTokenFilter extends TokenFilter {
 
     private final URLPart part;
 
+    private final boolean urlDeocde;
+
     private final CharTermAttribute termAttribute = addAttribute(CharTermAttribute.class);
 
     public URLTokenFilter(TokenStream input, URLPart part) {
+        this(input, part, false);
+    }
+
+    public URLTokenFilter(TokenStream input, URLPart part, boolean urlDecode) {
         super(input);
         this.part = part;
+        this.urlDeocde = urlDecode;
     }
 
     @Override
@@ -34,29 +42,34 @@ public final class URLTokenFilter extends TokenFilter {
                 return false;
             }
             URL url = new URL(urlString);
+            String partString;
             switch (part) {
                 case PROTOCOL:
-                    termAttribute.append(url.getProtocol());
+                    partString = url.getProtocol();
                     break;
                 case HOST:
-                    termAttribute.append(url.getHost());
+                    partString = url.getHost();
                     break;
                 case PORT:
-                    termAttribute.append(String.valueOf(url.getPort()));
+                    partString = String.valueOf(url.getPort());
                     break;
                 case PATH:
-                    termAttribute.append(url.getPath());
+                    partString = url.getPath();
                     break;
                 case REF:
-                    termAttribute.append(url.getRef());
+                    partString = url.getRef();
                     break;
                 case QUERY:
-                    termAttribute.append(url.getQuery());
+                    partString = url.getQuery();
                     break;
                 case WHOLE:
                 default:
-                    termAttribute.append(url.toString());
+                    partString = url.toString();
             }
+            if (urlDeocde) {
+                partString = URLDecoder.decode(partString, "UTF-8");
+            }
+            termAttribute.append(partString);
             return true;
         }
         return false;
