@@ -14,7 +14,7 @@ This plugin enables URL token filtering by URL part.
 
 ## Installation
 ```bash
-bin/plugin --install analysis-url --url https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v1.0.0/elasticsearch-analysis-url-1.0.0.zip
+bin/plugin --install analysis-url --url https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v1.1.0/elasticsearch-analysis-url-1.1.0.zip
 ```
 
 ## Usage
