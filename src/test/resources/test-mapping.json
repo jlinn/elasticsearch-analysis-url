@@ -1,0 +1,30 @@
+{
+    "properties": {
+        "url": {
+            "type": "string",
+            "fields": {
+                "url": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "port": {
+                    "type": "string",
+                    "analyzer": "url_port"
+                }
+            }
+        },
+        "url_malformed": {
+            "type": "string",
+            "fields": {
+                "url": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "port": {
+                    "type": "string",
+                    "analyzer": "url_port_malformed"
+                }
+            }
+        }
+    }
+}

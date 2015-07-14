@@ -65,16 +65,39 @@ public class URLTokenFilterTest extends BaseTokenStreamTestCase {
         assertTokenStreamContents(createFilter("https://www.foo.com?email=foo%40bar.com", URLPart.QUERY, true), "email=foo@bar.com");
     }
 
+    @Test
+    public void testInferPort() throws IOException {
+        assertTokenStreamContents(createFilter("http://www.foo.bar.com/baz/bat.html", URLPart.PORT), "80");
+        assertTokenStreamContents(createFilter("https://www.foo.bar.com/baz/bat.html", URLPart.PORT), "443");
+        assertTokenStreamContents(createFilter("https://foo.bar.com", URLPart.PORT), "443");
+    }
+
+    @Test
+    public void testMalformed() throws IOException {
+        URLTokenFilter filter = createFilter("http://:::::::/baz", URLPart.PROTOCOL, false, true);
+        assertTokenStreamContents(filter, "http");
+
+        filter = createFilter("foo.com/bar?baz=bat", URLPart.QUERY, false, true);
+        assertTokenStreamContents(filter, "baz=bat");
+
+        filter = createFilter("baz.com:3456/foo", URLPart.PORT, false, true);
+        assertTokenStreamContents(filter, "3456");
+    }
+
     private URLTokenFilter createFilter(final String url, final URLPart part) {
         return createFilter(url, part, false);
     }
 
     private URLTokenFilter createFilter(final String url, final URLPart part, final boolean urlDecode) {
+        return createFilter(url, part, urlDecode, false);
+    }
+
+    private URLTokenFilter createFilter(final String url, final URLPart part, final boolean urlDecode, final boolean allowMalformed) {
         int length = 0;
         if (url != null) {
             length = url.length();
         }
-        return new URLTokenFilter(new SingleTokenTokenStream(new Token(url, 0, length)), part, urlDecode);
+        return new URLTokenFilter(new SingleTokenTokenStream(new Token(url, 0, length)), part, urlDecode, allowMalformed);
     }
 
     private static void assertTokenStreamContents(TokenStream in, String output) throws IOException {

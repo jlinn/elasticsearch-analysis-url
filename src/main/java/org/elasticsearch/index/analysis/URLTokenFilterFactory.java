@@ -16,6 +16,7 @@ import org.elasticsearch.index.settings.IndexSettings;
 public class URLTokenFilterFactory extends AbstractTokenFilterFactory {
     private final URLPart part;
     private final boolean urlDecode;
+    private final boolean allowMalformed;
 
     @Inject
     public URLTokenFilterFactory(Index index, @IndexSettings Settings indexSettings, @Assisted String name, @Assisted Settings settings) {
@@ -23,10 +24,11 @@ public class URLTokenFilterFactory extends AbstractTokenFilterFactory {
 
         this.part = URLPart.fromString(settings.get("part", "whole"));
         this.urlDecode = settings.getAsBoolean("url_decode", false);
+        this.allowMalformed = settings.getAsBoolean("allow_malformed", false);
     }
 
     @Override
     public TokenStream create(TokenStream tokenStream) {
-        return new URLTokenFilter(tokenStream, part, urlDecode);
+        return new URLTokenFilter(tokenStream, part, urlDecode, allowMalformed);
     }
 }

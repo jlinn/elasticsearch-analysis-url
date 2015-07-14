@@ -17,6 +17,11 @@
                 "type": "url",
                 "part": "query",
                 "url_decode": true
+            },
+            "url_port_malformed": {
+                "type": "url",
+                "part": "port",
+                "allow_malformed": true
             }
         },
         "analyzer": {
@@ -41,6 +46,12 @@
             "url_query": {
                 "filter": [
                     "url_query"
+                ],
+                "tokenizer": "whitespace"
+            },
+            "url_port_malformed": {
+                "filter": [
+                    "url_port_malformed"
                 ],
                 "tokenizer": "whitespace"
             }
