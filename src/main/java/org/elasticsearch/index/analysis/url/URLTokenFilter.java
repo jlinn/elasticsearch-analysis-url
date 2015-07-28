@@ -28,6 +28,8 @@ public final class URLTokenFilter extends TokenFilter {
 
     private final boolean allowMalformed;
 
+    private boolean parsed;
+
     public URLTokenFilter(TokenStream input, URLPart part) {
         this(input, part, false);
     }
@@ -45,7 +47,7 @@ public final class URLTokenFilter extends TokenFilter {
 
     @Override
     public boolean incrementToken() throws IOException {
-        if (input.incrementToken()) {
+        if (input.incrementToken() && !parsed) {
             final String urlString = termAttribute.toString();
             termAttribute.setEmpty();
             if (Strings.isNullOrEmpty(urlString) || urlString.equals("null")) {
@@ -77,12 +79,14 @@ public final class URLTokenFilter extends TokenFilter {
                     default:
                         partString = url.toString();
                 }
+                parsed = !Strings.isNullOrEmpty(partString);
             } catch (MalformedURLException e) {
                 if (allowMalformed) {
                     partString = parseMalformed(urlString);
                     if (Strings.isNullOrEmpty(partString)) {
                         return false;
                     }
+                    parsed = true;
                 } else {
                     throw e;
                 }
@@ -94,6 +98,12 @@ public final class URLTokenFilter extends TokenFilter {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void reset() throws IOException {
+        super.reset();
+        parsed = false;
     }
 
     private static final Pattern REGEX_PROTOCOL = Pattern.compile("^([a-zA-Z]+)(?=://)");

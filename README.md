@@ -9,13 +9,13 @@ This plugin enables URL token filtering by URL part.
 
 | Elasticsearch Version | Plugin Version |
 |-----------------------|----------------|
-| 1.6.0 | 1.2.0 |
+| 1.6.0 | 1.2.1 |
 | 1.5.2 | 1.1.0 |
 | 1.4.2 | 1.0.0 |
 
 ## Installation
 ```bash
-bin/plugin --install analysis-url --url https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v1.1.0/elasticsearch-analysis-url-1.1.0.zip
+bin/plugin --install analysis-url --url https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v1.2.1/elasticsearch-analysis-url-1.2.1.zip
 ```
 
 ## Usage

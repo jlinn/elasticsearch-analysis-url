@@ -64,6 +64,7 @@ public class URLTokenFilterIntegrationTest extends ElasticsearchSingleNodeTest {
     @Test
     public void testUrlDecode() {
         assertURLAnalyzesTo("https://foo.bar.com?email=foo%40bar.com", "url_query", "email=foo@bar.com");
+        assertURLAnalyzesTo("https://ssl.google-analytics.com/r/__utm.gif?utmwv=5.6.4&utms=1&utmn=1031590447&utmhn=www.linkedin.com&utmcs=-&utmsr=1024x768&utmvp=1256x2417&utmsc=24-bit&utmul=en-us&utmje=1&utmfl=-&utmdt=Wells%20Fargo%20Capital%20Finance%20%7C%20LinkedIn&utmhid=735221740&utmr=http%3A%2F%2Fwww.google.com%2Fsearch%3Fq%3Dsite%253Alinkedin.com%2Bwells%2Bfargo%26rls%3Dcom.microsoft%3Aen-us%26ie%3DUTF-8%26oe%3DUTF-8%26startIndex%3D%26startPage%3D1&utmp=biz-overview-public&utmht=1428449620694&utmac=UA-3242811-1&utmcc=__utma%3D23068709.1484257758.1428449621.1428449621.1428449621.1%3B%2B__utmz%3D23068709.1428449621.1.1.utmcsr%3Dgoogle%7Cutmccn%3D(organic)%7Cutmcmd%3Dorganic%7Cutmctr%3Dsite%253Alinkedin.com%2520wells%2520fargo%3B&utmjid=1336170366&utmredir=1&utmu=qBCAAAAAAAAAAAAAAAAAAAAE~", "url_port", "443");
     }
 
     @Test
