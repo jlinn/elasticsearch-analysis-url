@@ -56,29 +56,7 @@ public final class URLTokenFilter extends TokenFilter {
             String partString;
             try {
                 URL url = new URL(urlString);
-                switch (part) {
-                    case PROTOCOL:
-                        partString = url.getProtocol();
-                        break;
-                    case HOST:
-                        partString = url.getHost();
-                        break;
-                    case PORT:
-                        partString = parsePort(url);
-                        break;
-                    case PATH:
-                        partString = url.getPath();
-                        break;
-                    case REF:
-                        partString = url.getRef();
-                        break;
-                    case QUERY:
-                        partString = url.getQuery();
-                        break;
-                    case WHOLE:
-                    default:
-                        partString = url.toString();
-                }
+                partString = URLUtils.getPart(url, part);
                 parsed = !Strings.isNullOrEmpty(partString);
             } catch (MalformedURLException e) {
                 if (allowMalformed) {
@@ -142,27 +120,5 @@ public final class URLTokenFilter extends TokenFilter {
             return matcher.group(1);
         }
         return null;
-    }
-
-
-    /**
-     * Parse the port from the given {@link URL}. If the port is not explicitly given, it will be inferred from the
-     * protocol.
-     *
-     * @param url the url
-     * @return the port
-     */
-    private String parsePort(URL url) {
-        int port = url.getPort();
-        if (port == -1) {
-            // infer port from protocol
-            final String protocol = url.getProtocol();
-            if (protocol.equals("http")) {
-                port = 80;
-            } else if (protocol.equals("https")) {
-                port = 443;
-            }
-        }
-        return String.valueOf(port);
     }
 }
