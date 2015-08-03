@@ -2,12 +2,9 @@ package org.elasticsearch.index.analysis.url;
 
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
-import org.elasticsearch.common.io.Streams;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.test.ElasticsearchSingleNodeTest;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -22,22 +19,7 @@ import static org.hamcrest.Matchers.hasSize;
  * Joe Linn
  * 1/17/2015
  */
-public class URLTokenFilterIntegrationTest extends ElasticsearchSingleNodeTest {
-    private static final String INDEX = "url_token_filter";
-
-    /**
-     * For subclasses to override. Overrides must call {@code super.setUp()}.
-     */
-    @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        String settings = Streams.copyToStringFromClasspath("/test-settings.json");
-        String mapping = Streams.copyToStringFromClasspath("/test-mapping.json");
-        client().admin().indices().prepareCreate(INDEX).setSettings(settings).addMapping("test", mapping).get();
-        refresh();
-        Thread.sleep(75);   // Ensure that the shard is available before we start making analyze requests.
-    }
+public class URLTokenFilterIntegrationTest extends URLAnalysisTestCase {
 
     @Test
     public void testAnalyze() throws InterruptedException {
@@ -97,17 +79,9 @@ public class URLTokenFilterIntegrationTest extends ElasticsearchSingleNodeTest {
         assertEquals("both docs indexed", 2, hits.getTotalHits());
     }
 
-    private void refresh() {
-        client().admin().indices().prepareRefresh().get();
-    }
-
     private void assertURLAnalyzesTo(String url, String analyzer, String expected) {
         List<AnalyzeResponse.AnalyzeToken> tokens = analyzeURL(url, analyzer);
         assertThat("a URL part was parsed", tokens, hasSize(1));
         assertEquals("term value", expected, tokens.get(0).getTerm());
-    }
-
-    private List<AnalyzeResponse.AnalyzeToken> analyzeURL(String url, String analyzer) {
-        return client().admin().indices().prepareAnalyze(INDEX, url).setAnalyzer(analyzer).get().getTokens();
     }
 }

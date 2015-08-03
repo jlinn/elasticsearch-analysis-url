@@ -1,5 +1,23 @@
 {
     "analysis": {
+        "tokenizer": {
+            "url_protocol": {
+                "type": "url",
+                "part": "protocol"
+            },
+            "url_host": {
+                "type": "url",
+                "part": "host"
+            },
+            "url_host_single": {
+                "type": "url",
+                "part": "host",
+                "tokenize_host": false
+            },
+            "url_all": {
+                "type": "url"
+            }
+        },
         "filter": {
             "url_protocol": {
                 "type": "url",
@@ -54,6 +72,18 @@
                     "url_port_malformed"
                 ],
                 "tokenizer": "whitespace"
+            },
+            "tokenizer_url_protocol": {
+                "tokenizer": "url_protocol"
+            },
+            "tokenizer_url_host": {
+                "tokenizer": "url_host"
+            },
+            "tokenizer_url_host_single": {
+                "tokenizer": "url_host_single"
+            },
+            "tokenizer_url_all": {
+                "tokenizer": "url_all"
             }
         }
     }

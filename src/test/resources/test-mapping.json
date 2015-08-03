@@ -13,6 +13,19 @@
                 }
             }
         },
+        "url_tokenized": {
+            "type": "string",
+            "fields": {
+                "url_tokenized": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "protocol": {
+                    "type": "string",
+                    "analyzer": "tokenizer_url_protocol"
+                }
+            }
+        },
         "url_malformed": {
             "type": "string",
             "fields": {

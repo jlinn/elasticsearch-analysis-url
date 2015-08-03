@@ -1,6 +1,7 @@
 package org.elasticsearch.index.analysis;
 
 import org.elasticsearch.index.analysis.url.URLTokenFilter;
+import org.elasticsearch.index.analysis.url.URLTokenizer;
 
 /**
  * Joe Linn
@@ -10,5 +11,11 @@ public class URLTokenAnalysisBinderProcessor extends AnalysisModule.AnalysisBind
     @Override
     public void processTokenFilters(TokenFiltersBindings tokenFiltersBindings) {
         tokenFiltersBindings.processTokenFilter(URLTokenFilter.NAME, URLTokenFilterFactory.class);
+    }
+
+
+    @Override
+    public void processTokenizers(TokenizersBindings tokenizersBindings) {
+        tokenizersBindings.processTokenizer(URLTokenizer.NAME, URLTokenizerFactory.class);
     }
 }

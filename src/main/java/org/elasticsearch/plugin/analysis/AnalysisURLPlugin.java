@@ -22,7 +22,7 @@ public class AnalysisURLPlugin extends AbstractPlugin {
      */
     @Override
     public String description() {
-        return "URL token filter.";
+        return "URL tokenizer and token filter.";
     }
 
     public void onModule(AnalysisModule module) {
