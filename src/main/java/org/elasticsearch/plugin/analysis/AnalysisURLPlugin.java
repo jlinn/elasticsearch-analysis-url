@@ -2,13 +2,13 @@ package org.elasticsearch.plugin.analysis;
 
 import org.elasticsearch.index.analysis.AnalysisModule;
 import org.elasticsearch.index.analysis.URLTokenAnalysisBinderProcessor;
-import org.elasticsearch.plugins.AbstractPlugin;
+import org.elasticsearch.plugins.Plugin;
 
 /**
  * Joe Linn
  * 1/17/2015
  */
-public class AnalysisURLPlugin extends AbstractPlugin {
+public class AnalysisURLPlugin extends Plugin {
     /**
      * The name of the plugin.
      */

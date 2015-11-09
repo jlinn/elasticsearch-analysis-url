@@ -1,15 +1,13 @@
 package org.elasticsearch.index.analysis;
 
+import com.google.common.base.Strings;
 import org.apache.lucene.analysis.Tokenizer;
-import org.elasticsearch.common.base.Strings;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.assistedinject.Assisted;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.analysis.url.URLTokenizer;
 import org.elasticsearch.index.settings.IndexSettings;
-
-import java.io.Reader;
 
 /**
  * Joe Linn
@@ -40,9 +38,10 @@ public class URLTokenizerFactory extends AbstractTokenizerFactory {
         this.allowMalformed = settings.getAsBoolean("allow_malformed", false);
     }
 
+
     @Override
-    public Tokenizer create(Reader reader) {
-        URLTokenizer tokenizer = new URLTokenizer(reader);
+    public Tokenizer create() {
+        URLTokenizer tokenizer = new URLTokenizer();
         tokenizer.setPart(part);
         tokenizer.setUrlDecode(urlDecode);
         tokenizer.setTokenizeHost(tokenizeHost);

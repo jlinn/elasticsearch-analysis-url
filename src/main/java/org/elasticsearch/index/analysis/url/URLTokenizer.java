@@ -1,5 +1,8 @@
 package org.elasticsearch.index.analysis.url;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.net.InetAddresses;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.path.PathHierarchyTokenizer;
 import org.apache.lucene.analysis.path.ReversePathHierarchyTokenizer;
@@ -8,9 +11,6 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 import org.apache.lucene.util.AttributeFactory;
-import org.elasticsearch.common.base.Strings;
-import org.elasticsearch.common.collect.ImmutableList;
-import org.elasticsearch.common.net.InetAddresses;
 import org.elasticsearch.index.analysis.URLPart;
 
 import java.io.IOException;
@@ -73,18 +73,17 @@ public final class URLTokenizer extends Tokenizer {
     private Iterator<Token> iterator;
 
 
-    public URLTokenizer(Reader input) {
-        super(input);
+    public URLTokenizer() {
+
     }
 
-    public URLTokenizer(Reader input, URLPart part) {
-        this(input);
+    public URLTokenizer(URLPart part) {
         this.part = part;
     }
 
 
-    public URLTokenizer(AttributeFactory factory, Reader input) {
-        super(factory, input);
+    public URLTokenizer(AttributeFactory factory) {
+        super(factory);
     }
 
 
@@ -206,7 +205,7 @@ public final class URLTokenizer extends Tokenizer {
                     end = getEndIndex(start, partStringRaw);
                     return ImmutableList.of(new Token(partString, part, start, end));
                 }
-                return tokenize(part, new ReversePathHierarchyTokenizer(new StringReader(partString), '.', '.'), start);
+                return tokenize(part, addReader(new ReversePathHierarchyTokenizer('.', '.'), new StringReader(partString)), start);
             case PORT:
                 String port = getPort(url);
                 start = url.toString().indexOf(":" + port);
@@ -225,14 +224,14 @@ public final class URLTokenizer extends Tokenizer {
                     end = getEndIndex(start, partStringRaw);
                     return ImmutableList.of(new Token(partString, part, start, end));
                 }
-                return tokenize(part, new PathHierarchyTokenizer(new StringReader(partString), '/', '/'), start);
+                return tokenize(part, addReader(new PathHierarchyTokenizer('/', '/'), new StringReader(partString)), start);
             case QUERY:
                 start = getStartIndex(url, partStringRaw);
                 if (!tokenizeQuery) {
                     end = getEndIndex(start, partStringRaw);
                     return ImmutableList.of(new Token(partString, part, start, end));
                 }
-                return tokenize(part, new PatternTokenizer(new StringReader(partString), QUERY_SEPARATOR, -1), start);
+                return tokenize(part, addReader(new PatternTokenizer(QUERY_SEPARATOR, -1), new StringReader(partString)), start);
             case PROTOCOL:
             case WHOLE:
                 end = partString.length();
@@ -243,6 +242,19 @@ public final class URLTokenizer extends Tokenizer {
             default:
         }
         return ImmutableList.of(new Token(partString, part, start, end));
+    }
+
+
+    /**
+     * Set the given reader on the given tokenizer
+     * @param tokenizer tokenizer on which the reader is to be set
+     * @param input the reader to set
+     * @return the given tokenizer with the given reader set
+     * @throws IOException
+     */
+    private Tokenizer addReader(Tokenizer tokenizer, Reader input) throws IOException {
+        tokenizer.setReader(input);
+        return tokenizer;
     }
 
 

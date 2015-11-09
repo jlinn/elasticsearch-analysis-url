@@ -2,7 +2,6 @@ package org.elasticsearch.index.analysis.url;
 
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
-import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
 import org.junit.Test;
@@ -60,7 +59,7 @@ public class URLTokenFilterIntegrationTest extends URLAnalysisTestCase {
 
         SearchHits hits = client()
                 .prepareSearch(INDEX)
-                .setQuery(QueryBuilders.filteredQuery(QueryBuilders.matchAllQuery(), FilterBuilders.missingFilter("http_malformed.port")))
+                .setQuery(QueryBuilders.missingQuery("http_malformed.port"))
                 .get()
                 .getHits();
         assertEquals("found a doc missing http_malformed.port", 1, hits.getTotalHits());

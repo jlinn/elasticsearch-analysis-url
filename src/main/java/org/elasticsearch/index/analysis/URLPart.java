@@ -1,7 +1,5 @@
 package org.elasticsearch.index.analysis;
 
-import org.elasticsearch.ElasticsearchIllegalArgumentException;
-
 /**
  * Joe Linn
  * 1/17/2015
@@ -21,6 +19,6 @@ public enum URLPart {
                 return urlPart;
             }
         }
-        throw new ElasticsearchIllegalArgumentException(String.format("Unrecognized URL part: %s", part));
+        throw new IllegalArgumentException(String.format("Unrecognized URL part: %s", part));
     }
 }

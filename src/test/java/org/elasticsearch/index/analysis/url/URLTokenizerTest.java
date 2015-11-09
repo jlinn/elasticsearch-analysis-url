@@ -54,7 +54,7 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
 
 
     @Test
-    public void testTokenizePort() {
+    public void testTokenizePort() throws IOException {
         URLTokenizer tokenizer = createTokenizer(TEST_HTTP_URL, URLPart.PORT);
         assertThat(tokenizer, hasTokenAtOffset("9200", 23, 27));
 
@@ -96,7 +96,7 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
 
 
     @Test
-    public void testTokenizeRef() {
+    public void testTokenizeRef() throws IOException {
         URLTokenizer tokenizer = createTokenizer("http://foo.com#baz", URLPart.REF);
         assertThat(tokenizer, hasTokenAtOffset("baz", 15, 18));
     }
@@ -104,7 +104,8 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
 
     @Test
     public void testAll() throws IOException {
-        URLTokenizer tokenizer = new URLTokenizer(new StringReader(TEST_HTTPS_URL));
+        URLTokenizer tokenizer = new URLTokenizer();
+        tokenizer.setReader(new StringReader(TEST_HTTPS_URL));
         CharTermAttribute termAttribute = tokenizer.getAttribute(CharTermAttribute.class);
         tokenizer.reset();
         tokenizer.clearAttributes();
@@ -138,8 +139,10 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
     }
 
 
-    private URLTokenizer createTokenizer(String input, URLPart part) {
-        return new URLTokenizer(new StringReader(input), part);
+    private URLTokenizer createTokenizer(String input, URLPart part) throws IOException {
+        URLTokenizer tokenizer = new URLTokenizer(part);
+        tokenizer.setReader(new StringReader(input));
+        return tokenizer;
     }
 
 

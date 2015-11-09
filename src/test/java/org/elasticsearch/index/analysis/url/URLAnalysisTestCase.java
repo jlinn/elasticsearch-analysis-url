@@ -1,8 +1,10 @@
 package org.elasticsearch.index.analysis.url;
 
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
-import org.elasticsearch.common.io.Streams;
-import org.elasticsearch.test.ElasticsearchSingleNodeTest;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.plugin.analysis.AnalysisURLPlugin;
+import org.elasticsearch.test.ESIntegTestCase;
+import org.elasticsearch.test.StreamsUtils;
 import org.junit.Before;
 
 import java.util.List;
@@ -11,8 +13,17 @@ import java.util.List;
  * Joe Linn
  * 8/1/2015
  */
-public abstract class URLAnalysisTestCase extends ElasticsearchSingleNodeTest {
+public abstract class URLAnalysisTestCase extends ESIntegTestCase {
     protected static final String INDEX = "url_token_filter";
+
+
+    @Override
+    protected Settings nodeSettings(int nodeOrdinal) {
+        return Settings.builder()
+                .put(super.nodeSettings(nodeOrdinal))
+                .put("plugin.types", AnalysisURLPlugin.class.getName())
+                .build();
+    }
 
     /**
      * For subclasses to override. Overrides must call {@code super.setUp()}.
@@ -21,15 +32,11 @@ public abstract class URLAnalysisTestCase extends ElasticsearchSingleNodeTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        String settings = Streams.copyToStringFromClasspath("/test-settings.json");
-        String mapping = Streams.copyToStringFromClasspath("/test-mapping.json");
+        String settings = StreamsUtils.copyToStringFromClasspath("/test-settings.json");
+        String mapping = StreamsUtils.copyToStringFromClasspath("/test-mapping.json");
         client().admin().indices().prepareCreate(INDEX).setSettings(settings).addMapping("test", mapping).get();
         refresh();
         Thread.sleep(75);   // Ensure that the shard is available before we start making analyze requests.
-    }
-
-    protected void refresh() {
-        client().admin().indices().prepareRefresh().get();
     }
 
     protected List<AnalyzeResponse.AnalyzeToken> analyzeURL(String url, String analyzer) {
