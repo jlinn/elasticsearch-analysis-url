@@ -1,12 +1,13 @@
 package org.elasticsearch.index.analysis.url;
 
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.plugin.analysis.AnalysisURLPlugin;
+import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.test.ESIntegTestCase;
 import org.elasticsearch.test.StreamsUtils;
 import org.junit.Before;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -18,11 +19,8 @@ public abstract class URLAnalysisTestCase extends ESIntegTestCase {
 
 
     @Override
-    protected Settings nodeSettings(int nodeOrdinal) {
-        return Settings.builder()
-                .put(super.nodeSettings(nodeOrdinal))
-                .put("plugin.types", AnalysisURLPlugin.class.getName())
-                .build();
+    protected Collection<Class<? extends Plugin>> nodePlugins() {
+        return pluginList(AnalysisURLPlugin.class);
     }
 
     /**

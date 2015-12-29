@@ -6,7 +6,7 @@ import org.elasticsearch.common.inject.assistedinject.Assisted;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.analysis.url.URLTokenFilter;
-import org.elasticsearch.index.settings.IndexSettings;
+import org.elasticsearch.index.settings.IndexSettingsService;
 
 /**
  * Joe Linn
@@ -19,8 +19,8 @@ public class URLTokenFilterFactory extends AbstractTokenFilterFactory {
     private final boolean allowMalformed;
 
     @Inject
-    public URLTokenFilterFactory(Index index, @IndexSettings Settings indexSettings, @Assisted String name, @Assisted Settings settings) {
-        super(index, indexSettings, name, settings);
+    public URLTokenFilterFactory(Index index, IndexSettingsService indexSettings, @Assisted String name, @Assisted Settings settings) {
+        super(index, indexSettings.indexSettings(), name, settings);
 
         this.part = URLPart.fromString(settings.get("part", "whole"));
         this.urlDecode = settings.getAsBoolean("url_decode", false);
