@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.elasticsearch.index.analysis.url.URLTokenFilterTest.TEST_HTTPS_URL;
 import static org.elasticsearch.index.analysis.url.URLTokenFilterTest.TEST_HTTP_URL;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 /**
@@ -64,6 +65,18 @@ public class URLTokenFilterIntegrationTest extends URLAnalysisTestCase {
                 .getHits();
         assertEquals("found a doc missing http_malformed.port", 1, hits.getTotalHits());
     }
+
+
+    @Test
+    public void testPassthrough() {
+        List<AnalyzeResponse.AnalyzeToken> tokens = analyzeURL("http://foo.com:9200/foo.bar baz bat.blah", "url_host_passthrough");
+        assertThat(tokens, hasSize(4));
+        assertThat(tokens.get(0).getTerm(), equalTo("foo.com"));
+        assertThat(tokens.get(1).getTerm(), equalTo("com"));
+        assertThat(tokens.get(2).getTerm(), equalTo("baz"));
+        assertThat(tokens.get(3).getTerm(), equalTo("bat.blah"));
+    }
+
 
     @Test
     public void testIndex() {

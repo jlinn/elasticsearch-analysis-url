@@ -287,7 +287,7 @@ public final class URLTokenizer extends Tokenizer {
      * @return a list of tokens
      * @throws IOException
      */
-    List<Token> tokenize(URLPart part, Tokenizer tokenizer, int start) throws IOException {
+    private List<Token> tokenize(URLPart part, Tokenizer tokenizer, int start) throws IOException {
         tokenizer.reset();
         List<Token> tokens = new ArrayList<>();
         OffsetAttribute offset;

@@ -25,7 +25,8 @@
             },
             "url_host": {
                 "type": "url",
-                "part": "host"
+                "part": "host",
+                "tokenize_host": false
             },
             "url_port": {
                 "type": "url",
@@ -34,12 +35,18 @@
             "url_query": {
                 "type": "url",
                 "part": "query",
-                "url_decode": true
+                "url_decode": true,
+                "tokenize_query": false
             },
             "url_port_malformed": {
                 "type": "url",
                 "part": "port",
                 "allow_malformed": true
+            },
+            "url_host_passthrough": {
+                "type": "url",
+                "part": "host",
+                "passthrough": "true"
             }
         },
         "analyzer": {
@@ -70,6 +77,12 @@
             "url_port_malformed": {
                 "filter": [
                     "url_port_malformed"
+                ],
+                "tokenizer": "whitespace"
+            },
+            "url_host_passthrough": {
+                "filter": [
+                    "url_host_passthrough"
                 ],
                 "tokenizer": "whitespace"
             },

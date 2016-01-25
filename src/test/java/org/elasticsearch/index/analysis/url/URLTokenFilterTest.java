@@ -25,7 +25,7 @@ public class URLTokenFilterTest extends BaseTokenStreamTestCase {
 
     @Test
     public void testFilterHost() throws IOException {
-        assertTokenStreamContents(createFilter(TEST_HTTP_URL, URLPart.HOST), "www.foo.bar.com");
+        assertTokenStreamContents(createFilter(TEST_HTTP_URL, URLPart.HOST).setTokenizeHost(false), "www.foo.bar.com");
     }
 
     @Test
@@ -35,7 +35,7 @@ public class URLTokenFilterTest extends BaseTokenStreamTestCase {
 
     @Test
     public void testFilterPath() throws IOException {
-        assertTokenStreamContents(createFilter(TEST_HTTP_URL, URLPart.PATH), "/index_name/type_name/_search.html");
+        assertTokenStreamContents(createFilter(TEST_HTTP_URL, URLPart.PATH).setTokenizePath(false), "/index_name/type_name/_search.html");
     }
 
     @Test
@@ -45,7 +45,7 @@ public class URLTokenFilterTest extends BaseTokenStreamTestCase {
 
     @Test
     public void testFilterQuery() throws IOException {
-        assertTokenStreamContents(createFilter(TEST_HTTP_URL, URLPart.QUERY), "foo=bar&baz=bat");
+        assertTokenStreamContents(createFilter(TEST_HTTP_URL, URLPart.QUERY).setTokenizeQuery(false), "foo=bar&baz=bat");
     }
 
     @Test(expected = MalformedURLException.class)
