@@ -307,7 +307,7 @@ public final class URLTokenizer extends Tokenizer {
      * @return a list of {@link Token}s. Since tokens created in this method do not pertain to a specific part of the url,
      * {@link URLPart#WHOLE} will be used.
      */
-    List<Token> tokenizeSpecial(URL url) {
+    private List<Token> tokenizeSpecial(URL url) {
         List<Token> tokens = new ArrayList<>();
         // host:port
         String token = getPart(url, URLPart.HOST) + ":" + getPart(url, URLPart.PORT);
