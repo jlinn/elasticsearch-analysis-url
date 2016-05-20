@@ -196,7 +196,13 @@ public final class URLTokenizer extends Tokenizer {
         int start = 0;
         int end = 0;
         if (urlDecode) {
-            partString = URLDecoder.decode(partString, "UTF-8");
+            try {
+                partString = URLDecoder.decode(partString, "UTF-8");
+            } catch (IllegalArgumentException e) {
+                if (!allowMalformed) {
+                    throw new IOException("Error performing URL decoding on string: " + partString, e);
+                }
+            }
         }
         switch (part) {
             case HOST:
