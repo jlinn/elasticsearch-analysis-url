@@ -130,6 +130,9 @@ public final class URLTokenFilter extends TokenFilter {
                 }
                 throw e;
             }
+            if (tokens.isEmpty()) {
+                return false;
+            }
             iterator = tokens.iterator();
             return true;
         } else {
