@@ -84,6 +84,14 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
 
 
     @Test
+    public void testTokenizeNoPath() throws Exception {
+        final String url = "http://www.foo.bar.com:9200";
+        URLTokenizer tokenizer = createTokenizer(url, URLPart.PATH);
+        assertTokenStreamContents(tokenizer, stringArray());
+    }
+
+
+    @Test
     public void testTokenizeQuery() throws IOException {
         URLTokenizer tokenizer = createTokenizer(TEST_HTTP_URL, URLPart.QUERY);
         assertTokenStreamContents(tokenizer, stringArray("foo=bar", "baz=bat"));
@@ -136,6 +144,34 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
         URLTokenizer tokenizer = createTokenizer("://foo.com", URLPart.QUERY);
         tokenizer.setAllowMalformed(true);
         assertTokenStreamContents(tokenizer, stringArray("://foo.com"));
+    }
+
+
+    @Test
+    public void testUrlDecode() throws Exception {
+        String url = "http://foo.com?baz=foo%20bat";
+        URLTokenizer tokenizer = createTokenizer(url, URLPart.QUERY);
+        tokenizer.setUrlDecode(true);
+        assertTokenStreamContents(tokenizer, stringArray("baz=foo bat"));
+    }
+
+
+    @Test(expected = IOException.class)
+    public void testUrlDecodeIllegalCharacters() throws Exception {
+        String url = "http://foo.com?baz=foo%2vbat";
+        URLTokenizer tokenizer = createTokenizer(url, URLPart.QUERY);
+        tokenizer.setUrlDecode(true);
+        assertTokenStreamContents(tokenizer, "");
+    }
+
+
+    @Test
+    public void testUrlDecodeAllowMalformed() throws Exception {
+        String url = "http://foo.com?baz=foo%2vbat";
+        URLTokenizer tokenizer = createTokenizer(url, URLPart.QUERY);
+        tokenizer.setUrlDecode(true);
+        tokenizer.setAllowMalformed(true);
+        assertTokenStreamContents(tokenizer, "baz=foo%2vbat");
     }
 
 
