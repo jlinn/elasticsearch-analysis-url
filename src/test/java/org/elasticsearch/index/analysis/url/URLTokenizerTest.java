@@ -84,6 +84,14 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
 
 
     @Test
+    public void testTokenizeNoPath() throws Exception {
+        final String url = "http://www.foo.bar.com:9200";
+        URLTokenizer tokenizer = createTokenizer(url, URLPart.PATH);
+        assertTokenStreamContents(tokenizer, stringArray());
+    }
+
+
+    @Test
     public void testTokenizeQuery() throws IOException {
         URLTokenizer tokenizer = createTokenizer(TEST_HTTP_URL, URLPart.QUERY);
         assertTokenStreamContents(tokenizer, stringArray("foo=bar", "baz=bat"));

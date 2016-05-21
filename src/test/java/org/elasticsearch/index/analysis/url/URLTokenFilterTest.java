@@ -37,7 +37,7 @@ public class URLTokenFilterTest extends BaseTokenStreamTestCase {
     @Test
     public void testFilterPath() throws IOException {
         assertTokenStreamContents(createFilter(TEST_HTTP_URL, URLPart.PATH).setTokenizePath(false), "/index_name/type_name/_search.html");
-        assertTokenStreamContents(createFilter(TEST_HTTP_URL2, URLPart.PATH).setTokenizePath(false), "");
+        assertTokenStreamContents(createFilter(TEST_HTTP_URL2, URLPart.PATH).setTokenizePath(false), new String[]{});
     }
 
     @Test
