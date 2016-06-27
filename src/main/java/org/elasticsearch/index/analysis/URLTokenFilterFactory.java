@@ -20,6 +20,7 @@ public class URLTokenFilterFactory extends AbstractTokenFilterFactory {
     private boolean tokenizePath;
     private boolean tokenizeQuery;
     private final boolean allowMalformed;
+    private final boolean tokenizeMalformed;
     private final boolean passthrough;
 
     @Inject
@@ -32,12 +33,14 @@ public class URLTokenFilterFactory extends AbstractTokenFilterFactory {
         this.tokenizePath = settings.getAsBoolean("tokenize_path", true);
         this.tokenizeQuery = settings.getAsBoolean("tokenize_query", true);
         this.allowMalformed = settings.getAsBoolean("allow_malformed", false);
+        this.tokenizeMalformed = settings.getAsBoolean("tokenize_malformed", false);
         this.passthrough = settings.getAsBoolean("passthrough", false);
     }
 
     @Override
     public TokenStream create(TokenStream tokenStream) {
         return  new URLTokenFilter(tokenStream, part, urlDecode, allowMalformed, passthrough)
+                .setTokenizeMalformed(tokenizeMalformed)
                 .setTokenizeHost(tokenizeHost)
                 .setTokenizePath(tokenizePath)
                 .setTokenizeQuery(tokenizeQuery);

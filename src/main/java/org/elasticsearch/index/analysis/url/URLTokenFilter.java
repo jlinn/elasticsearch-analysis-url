@@ -48,6 +48,8 @@ public final class URLTokenFilter extends TokenFilter {
 
     private final boolean allowMalformed;
 
+    private boolean tokenizeMalformed;
+
     private boolean passthrough;
 
     private List<String> tokens;
@@ -89,6 +91,11 @@ public final class URLTokenFilter extends TokenFilter {
         return this;
     }
 
+
+    public URLTokenFilter setTokenizeMalformed(boolean tokenizeMalformed) {
+        this.tokenizeMalformed = tokenizeMalformed;
+        return this;
+    }
 
     @Override
     public boolean incrementToken() throws IOException {
@@ -156,6 +163,7 @@ public final class URLTokenFilter extends TokenFilter {
         tokenizer.setTokenizePath(tokenizePath);
         tokenizer.setTokenizeQuery(tokenizeQuery);
         tokenizer.setAllowMalformed(allowMalformed || passthrough);
+        tokenizer.setTokenizeMalformed(tokenizeMalformed);
         tokenizer.setReader(new StringReader(input));
         tokenizer.reset();
         while (tokenizer.incrementToken()) {

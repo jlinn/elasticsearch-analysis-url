@@ -9,7 +9,7 @@ This plugin enables URL tokenization and token filtering by URL part.
 
 | Elasticsearch Version | Plugin Version |
 |-----------------------|----------------|
-| 2.3.3 | 2.3.3.1 |
+| 2.3.3 | 2.3.3.2 |
 | 2.3.2 | 2.3.2.1 |
 | 2.3.1 | 2.3.1.1 |
 | 2.3.0 | 2.3.0.1 |
@@ -26,7 +26,7 @@ This plugin enables URL tokenization and token filtering by URL part.
 
 ## Installation
 ```bash
-bin/plugin install https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v2.3.3.1/elasticsearch-analysis-url-2.3.3.1.zip
+bin/plugin install https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v2.3.3.2/elasticsearch-analysis-url-2.3.3.2.zip
 ```
 
 ## Usage
@@ -35,6 +35,7 @@ bin/plugin install https://github.com/jlinn/elasticsearch-analysis-url/releases/
 * `part`: Defaults to `null`. If left `null`, all URL parts will be tokenized, and some additional tokens (`host:port` and `protocol://host`) will be included. Options are `whole`, `protocol`, `host`, `port`, `path`, `query`, and `ref`.
 * `url_decode`: Defaults to `false`. If `true`, URL tokens will be URL decoded.
 * `allow_malformed`: Defaults to `false`. If `true`, malformed URLs will not be rejected, but will be passed through without being tokenized.
+* `tokenize_malformed`: Defaults to `false`. Has no effect if `allow_malformed` is `false`. If both are `true`, an attempt will be made to tokenize malformed URLs using regular expressions.
 * `tokenize_host`: Defaults to `true`. If `true`, the host will be further tokenized using a [reverse path hierarchy tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pathhierarchy-tokenizer.html) with the delimiter set to `.`.
 * `tokenize_path`: Defaults to `true`. If `true`, the path will be tokenized using a [path hierarchy tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pathhierarchy-tokenizer.html) with the delimiter set to `/`.
 * `tokenize_query`: Defaults to `true`. If `true`, the query string will be split on `&`.

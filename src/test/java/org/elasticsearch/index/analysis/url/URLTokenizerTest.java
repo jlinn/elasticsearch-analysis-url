@@ -175,6 +175,34 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
     }
 
 
+    @Test
+    public void testPartialUrl() throws Exception {
+        final String url = "http://";
+        URLTokenizer tokenizer = createTokenizer(url, URLPart.QUERY);
+        assertTokenStreamContents(tokenizer, new String[]{});
+    }
+
+
+    @Test
+    public void testNoProtocol() throws Exception {
+        final String url = "foo.bar.baz/bat/blah.html";
+        URLTokenizer tokenizer = createTokenizer(url, URLPart.PATH);
+        tokenizer.setAllowMalformed(true);
+        tokenizer.setTokenizeMalformed(true);
+        assertTokenStreamContents(tokenizer, stringArray("/bat", "/bat/blah.html"));
+    }
+
+
+    @Test
+    public void testMalformedGetRef() throws Exception {
+        String url = "/bat/blah.html#tag?baz=bat";
+        URLTokenizer tokenizer = createTokenizer(url, URLPart.REF);
+        tokenizer.setAllowMalformed(true);
+        tokenizer.setTokenizeMalformed(true);
+        assertTokenStreamContents(tokenizer, stringArray("tag"));
+    }
+
+
     private URLTokenizer createTokenizer(String input, URLPart part) throws IOException {
         URLTokenizer tokenizer = new URLTokenizer(part);
         tokenizer.setReader(new StringReader(input));

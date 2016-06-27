@@ -21,6 +21,7 @@ public class URLTokenizerFactory extends AbstractTokenizerFactory {
     private boolean tokenizePath;
     private boolean tokenizeQuery;
     private boolean allowMalformed;
+    private boolean tokenizeMalformed;
 
 
     @Inject
@@ -36,6 +37,7 @@ public class URLTokenizerFactory extends AbstractTokenizerFactory {
         this.tokenizePath = settings.getAsBoolean("tokenize_path", true);
         this.tokenizeQuery = settings.getAsBoolean("tokenize_query", true);
         this.allowMalformed = settings.getAsBoolean("allow_malformed", false);
+        this.tokenizeMalformed = settings.getAsBoolean("tokenize_malformed", false);
     }
 
 
@@ -48,6 +50,7 @@ public class URLTokenizerFactory extends AbstractTokenizerFactory {
         tokenizer.setTokenizePath(tokenizePath);
         tokenizer.setTokenizeQuery(tokenizeQuery);
         tokenizer.setAllowMalformed(allowMalformed);
+        tokenizer.setTokenizeMalformed(tokenizeMalformed);
         return tokenizer;
     }
 }
