@@ -203,6 +203,16 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
     }
 
 
+    @Test
+    public void testMalformedWhole() throws Exception {
+        String url = "foo.bar.com/baz.html/query?a=1";
+        URLTokenizer tokenizer = createTokenizer(url, URLPart.WHOLE);
+        tokenizer.setAllowMalformed(true);
+        tokenizer.setTokenizeMalformed(true);
+        assertTokenStreamContents(tokenizer, stringArray("foo.bar.com/baz.html/query?a=1"));
+    }
+
+
     private URLTokenizer createTokenizer(String input, URLPart part) throws IOException {
         URLTokenizer tokenizer = new URLTokenizer(part);
         tokenizer.setReader(new StringReader(input));

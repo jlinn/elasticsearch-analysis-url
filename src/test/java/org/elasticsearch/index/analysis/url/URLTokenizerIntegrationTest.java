@@ -8,6 +8,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 /**
@@ -25,6 +26,16 @@ public class URLTokenizerIntegrationTest extends URLAnalysisTestCase {
         assertThat(hostTokens, hasSize(1));
 
         assertTokensContain(URLTokenizerTest.TEST_HTTP_URL, "tokenizer_url_all", "www.foo.bar.com:9200", "http://www.foo.bar.com");
+
+        assertTokensContain("foo.bar.com/baz.html/query?a=1", "tokenizer_url_all_malformed", "foo.bar.com", "/baz.html/query");
+    }
+
+
+    @Test
+    public void testAnalyzeWhole() throws Exception {
+        List<AnalyzeResponse.AnalyzeToken> tokens = analyzeURL("http://foo.bar.com", "tokenizer_url_all_malformed");
+        assertThat(tokens, notNullValue());
+        assertThat(tokens, hasSize(7));
     }
 
 

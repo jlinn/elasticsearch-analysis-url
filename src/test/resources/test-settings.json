@@ -16,6 +16,11 @@
             },
             "url_all": {
                 "type": "url"
+            },
+            "url_all_malformed": {
+                "type": "url",
+                "allow_malformed": true,
+                "tokenize_malformed": true
             }
         },
         "filter": {
@@ -97,6 +102,9 @@
             },
             "tokenizer_url_all": {
                 "tokenizer": "url_all"
+            },
+            "tokenizer_url_all_malformed": {
+                "tokenizer": "url_all_malformed"
             }
         }
     }

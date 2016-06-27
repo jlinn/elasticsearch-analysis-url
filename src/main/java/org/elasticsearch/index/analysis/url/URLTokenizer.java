@@ -1,8 +1,10 @@
 package org.elasticsearch.index.analysis.url;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.net.InetAddresses;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.path.PathHierarchyTokenizer;
@@ -20,9 +22,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static org.elasticsearch.index.analysis.url.URLUtils.getPart;
@@ -169,12 +169,12 @@ public final class URLTokenizer extends Tokenizer {
                 return tokenize(url, part);
             }
             // No part is specified. Tokenize all parts.
-            List<Token> tokens = new ArrayList<>();
+            Set<Token> tokens = new HashSet<>();
             for (URLPart urlPart : URLPart.values()) {
                 tokens.addAll(tokenize(url, urlPart));
             }
             tokens.addAll(tokenizeSpecial(url));
-            return tokens;
+            return Lists.newArrayList(tokens);
         } catch (MalformedURLException e) {
             if (allowMalformed) {
                 return tokenizeMalformed(urlString, tokenizeMalformed ? part : URLPart.WHOLE);
@@ -192,6 +192,14 @@ public final class URLTokenizer extends Tokenizer {
      * @throws IOException
      */
     private List<Token> tokenizeMalformed(String url, URLPart part) throws IOException {
+        if (part == null) {
+            // No part is specified. Tokenize all parts.
+            List<Token> tokens = new ArrayList<>();
+            for (URLPart urlPart : URLPart.values()) {
+                tokens.addAll(tokenizeMalformed(url, urlPart));
+            }
+            return tokens;
+        }
         Optional<String> partOptional = getPart(url, part);
         if (!partOptional.isPresent() || partOptional.get().equals("")) {
             // desired part was not found
@@ -486,5 +494,27 @@ public final class URLTokenizer extends Tokenizer {
         public int getStart() { return start; }
 
         public int getEnd() { return end; }
+
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null || !(obj instanceof Token)) {
+                return false;
+            }
+            Token that = (Token) obj;
+            return this.start == that.start
+                    && this.end == that.end
+                    && Objects.equal(this.token, that.token)
+                    && Objects.equal(this.part, that.part);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = token != null ? token.hashCode() : 0;
+            result = 31 * result + part.hashCode();
+            result = 31 * result + start;
+            result = 31 * result + end;
+            return result;
+        }
     }
 }
