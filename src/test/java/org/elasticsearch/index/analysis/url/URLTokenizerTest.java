@@ -1,5 +1,6 @@
 package org.elasticsearch.index.analysis.url;
 
+import com.google.common.collect.ImmutableList;
 import org.apache.lucene.analysis.BaseTokenStreamTestCase;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -213,8 +214,18 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
     }
 
 
-    private URLTokenizer createTokenizer(String input, URLPart part) throws IOException {
-        URLTokenizer tokenizer = new URLTokenizer(part);
+    @Test
+    public void testProtocolAndPort() throws Exception {
+        URLTokenizer tokenizer = createTokenizer(TEST_HTTP_URL, URLPart.PROTOCOL, URLPart.PORT);
+        assertTokenStreamContents(tokenizer, stringArray("http", "9200"));
+    }
+
+
+    private URLTokenizer createTokenizer(String input, URLPart... parts) throws IOException {
+        URLTokenizer tokenizer = new URLTokenizer();
+        if (parts != null) {
+            tokenizer.setParts(ImmutableList.copyOf(parts));
+        }
         tokenizer.setReader(new StringReader(input));
         return tokenizer;
     }

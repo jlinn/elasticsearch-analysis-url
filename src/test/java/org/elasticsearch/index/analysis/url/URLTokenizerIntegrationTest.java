@@ -27,6 +27,8 @@ public class URLTokenizerIntegrationTest extends URLAnalysisTestCase {
 
         assertTokensContain(URLTokenizerTest.TEST_HTTP_URL, "tokenizer_url_all", "www.foo.bar.com:9200", "http://www.foo.bar.com");
 
+        assertTokensContain(URLTokenizerTest.TEST_HTTP_URL, "tokenizer_url_protocol_and_host", "http", "www.foo.bar.com", "foo.bar.com", "bar.com", "com");
+
         assertTokensContain("foo.bar.com/baz.html/query?a=1", "tokenizer_url_all_malformed", "foo.bar.com", "/baz.html/query");
     }
 

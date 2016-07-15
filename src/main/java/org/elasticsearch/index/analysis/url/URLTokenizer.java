@@ -37,7 +37,7 @@ public final class URLTokenizer extends Tokenizer {
     /**
      * If set, only the given part of the url will be tokenized.
      */
-    private URLPart part;
+    private List<URLPart> parts;
 
     /**
      * If true, url parts will be url decoded prior to tokenization.
@@ -84,7 +84,7 @@ public final class URLTokenizer extends Tokenizer {
     }
 
     public URLTokenizer(URLPart part) {
-        this.part = part;
+        setPart(part);
     }
 
 
@@ -92,8 +92,13 @@ public final class URLTokenizer extends Tokenizer {
         super(factory);
     }
 
+    public void setParts(List<URLPart> parts) { this.parts = parts; }
 
-    public void setPart(URLPart part) { this.part = part; }
+    public void setPart(URLPart part) {
+        if (part != null) {
+            this.parts = ImmutableList.of(part);
+        }
+    }
 
     public void setUrlDecode(boolean urlDecode) { this.urlDecode = urlDecode; }
 
@@ -164,9 +169,12 @@ public final class URLTokenizer extends Tokenizer {
     private List<Token> tokenize(String urlString) throws IOException {
         try {
             URL url = new URL(urlString);
-            if (part != null) {
-                // single URL part
-                return tokenize(url, part);
+            if (parts != null && !parts.isEmpty()) {
+                List<Token> tokens = new ArrayList<>();
+                for (URLPart part : parts) {
+                    tokens.addAll(tokenize(url, part));
+                }
+                return tokens;
             }
             // No part is specified. Tokenize all parts.
             Set<Token> tokens = new HashSet<>();
@@ -177,7 +185,14 @@ public final class URLTokenizer extends Tokenizer {
             return Lists.newArrayList(tokens);
         } catch (MalformedURLException e) {
             if (allowMalformed) {
-                return tokenizeMalformed(urlString, tokenizeMalformed ? part : URLPart.WHOLE);
+                if (tokenizeMalformed && parts != null && !parts.isEmpty()) {
+                    List<Token> tokens = new ArrayList<>();
+                    for (URLPart part : parts) {
+                        tokens.addAll(tokenizeMalformed(urlString, part));
+                    }
+                    return tokens;
+                }
+                return tokenizeMalformed(urlString, (parts == null || parts.isEmpty()) ? null : URLPart.WHOLE);
             }
             throw new IOException("Malformed URL: " + urlString, e);
         }

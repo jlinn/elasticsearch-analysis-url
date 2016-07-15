@@ -14,6 +14,10 @@
                 "part": "host",
                 "tokenize_host": false
             },
+            "url_protocol_and_host": {
+                "type": "url",
+                "part": ["protocol", "host"]
+            },
             "url_all": {
                 "type": "url"
             },
@@ -99,6 +103,9 @@
             },
             "tokenizer_url_host_single": {
                 "tokenizer": "url_host_single"
+            },
+            "tokenizer_url_protocol_and_host": {
+                "tokenizer": "url_protocol_and_host"
             },
             "tokenizer_url_all": {
                 "tokenizer": "url_all"

@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 public final class URLTokenFilter extends TokenFilter {
     public static final String NAME = "url";
 
-    private final URLPart part;
+    private List<URLPart> parts;
 
     private final boolean urlDeocde;
 
@@ -69,12 +69,21 @@ public final class URLTokenFilter extends TokenFilter {
 
     public URLTokenFilter(TokenStream input, URLPart part, boolean urlDecode, boolean allowMalformed, boolean passthrough) {
         super(input);
-        this.part = part;
+        if (part != null) {
+            this.parts = ImmutableList.of(part);
+        } else {
+            parts = null;
+        }
         this.urlDeocde = urlDecode;
         this.allowMalformed = allowMalformed;
         this.passthrough = passthrough;
     }
 
+
+    public URLTokenFilter setParts(List<URLPart> parts) {
+        this.parts = parts;
+        return this;
+    }
 
     public URLTokenFilter setTokenizeHost(boolean tokenizeHost) {
         this.tokenizeHost = tokenizeHost;
@@ -99,7 +108,7 @@ public final class URLTokenFilter extends TokenFilter {
 
     @Override
     public boolean incrementToken() throws IOException {
-        if(iterator == null || !iterator.hasNext()){
+        if (iterator == null || !iterator.hasNext()) {
             if ((iterator != null && !iterator.hasNext() && !passthrough) || !advance()) {
                 return false;
             }
@@ -157,7 +166,8 @@ public final class URLTokenFilter extends TokenFilter {
      */
     private List<String> tokenize(String input) throws IOException {
         List<String> tokens = new ArrayList<>();
-        URLTokenizer tokenizer = new URLTokenizer(part);
+        URLTokenizer tokenizer = new URLTokenizer();
+        tokenizer.setParts(parts);
         tokenizer.setUrlDecode(urlDeocde);
         tokenizer.setTokenizeHost(tokenizeHost);
         tokenizer.setTokenizePath(tokenizePath);
@@ -190,18 +200,31 @@ public final class URLTokenFilter extends TokenFilter {
      * @return the url part if it can be parsed, null otherwise
      */
     private String parseMalformed(String urlString) {
-        switch (part) {
-            case PROTOCOL:
-                return applyPattern(REGEX_PROTOCOL, urlString);
-            case PORT:
-                return applyPattern(REGEX_PORT, urlString);
-            case QUERY:
-                return applyPattern(REGEX_QUERY, urlString);
-            case WHOLE:
-                return urlString;
-            default:
-                return urlString;
+        if (parts != null && !parts.isEmpty()) {
+            String ret;
+            for (URLPart part : parts) {
+                switch (part) {
+                    case PROTOCOL:
+                        ret = applyPattern(REGEX_PROTOCOL, urlString);
+                        break;
+                    case PORT:
+                        ret = applyPattern(REGEX_PORT, urlString);
+                        break;
+                    case QUERY:
+                        ret = applyPattern(REGEX_QUERY, urlString);
+                        break;
+                    case WHOLE:
+                        ret = urlString;
+                        break;
+                    default:
+                        ret = urlString;
+                }
+                if (!Strings.isNullOrEmpty(ret)) {
+                    return ret;
+                }
+            }
         }
+        return urlString;
     }
 
     /**

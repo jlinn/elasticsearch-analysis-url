@@ -1,6 +1,7 @@
 package org.elasticsearch.index.analysis;
 
-import com.google.common.base.Strings;
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import org.apache.lucene.analysis.Tokenizer;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.assistedinject.Assisted;
@@ -9,13 +10,15 @@ import org.elasticsearch.index.Index;
 import org.elasticsearch.index.analysis.url.URLTokenizer;
 import org.elasticsearch.index.settings.IndexSettingsService;
 
+import java.util.List;
+
 /**
  * Joe Linn
  * 8/1/2015
  */
 @AnalysisSettingsRequired
 public class URLTokenizerFactory extends AbstractTokenizerFactory {
-    private URLPart part;
+    private List<URLPart> parts;
     private boolean urlDecode;
     private boolean tokenizeHost;
     private boolean tokenizePath;
@@ -28,9 +31,14 @@ public class URLTokenizerFactory extends AbstractTokenizerFactory {
     public URLTokenizerFactory(Index index, IndexSettingsService indexSettings, @Assisted String name, @Assisted Settings settings) {
         super(index, indexSettings.indexSettings(), name, settings);
 
-        String partString = settings.get("part");
-        if (!Strings.isNullOrEmpty(partString)) {
-            this.part = URLPart.fromString(partString);
+        String[] parts = settings.getAsArray("part");
+        if (parts != null && parts.length > 0) {
+            this.parts = FluentIterable.of(parts).transform(new Function<String, URLPart>() {
+                @Override
+                public URLPart apply(String input) {
+                    return URLPart.fromString(input);
+                }
+            }).toList();
         }
         this.urlDecode = settings.getAsBoolean("url_decode", false);
         this.tokenizeHost = settings.getAsBoolean("tokenize_host", true);
@@ -44,7 +52,7 @@ public class URLTokenizerFactory extends AbstractTokenizerFactory {
     @Override
     public Tokenizer create() {
         URLTokenizer tokenizer = new URLTokenizer();
-        tokenizer.setPart(part);
+        tokenizer.setParts(parts);
         tokenizer.setUrlDecode(urlDecode);
         tokenizer.setTokenizeHost(tokenizeHost);
         tokenizer.setTokenizePath(tokenizePath);
