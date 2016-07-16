@@ -1,5 +1,7 @@
 package org.elasticsearch.index.analysis;
 
+import com.google.common.collect.Ordering;
+
 /**
  * Joe Linn
  * 1/17/2015
@@ -7,10 +9,10 @@ package org.elasticsearch.index.analysis;
 public enum URLPart {
     PROTOCOL,
     HOST,
+    PORT,
     PATH,
     REF,
     QUERY,
-    PORT,
     WHOLE;
 
     public static URLPart fromString(String part) {
@@ -21,4 +23,6 @@ public enum URLPart {
         }
         throw new IllegalArgumentException(String.format("Unrecognized URL part: %s", part));
     }
+
+    public static Ordering<URLPart> PART_ORDER = Ordering.explicit(PROTOCOL, HOST, PORT, PATH, REF, QUERY, WHOLE);
 }
