@@ -92,7 +92,11 @@ public final class URLTokenizer extends Tokenizer {
         super(factory);
     }
 
-    public void setParts(List<URLPart> parts) { this.parts = parts; }
+    public void setParts(List<URLPart> parts) {
+        if (parts != null) {
+            this.parts = URLPart.PART_ORDER.sortedCopy(parts);
+        }
+    }
 
     public void setPart(URLPart part) {
         if (part != null) {
@@ -187,8 +191,17 @@ public final class URLTokenizer extends Tokenizer {
             if (allowMalformed) {
                 if (tokenizeMalformed && parts != null && !parts.isEmpty()) {
                     List<Token> tokens = new ArrayList<>();
+                    Set<String> tokenStrings = new HashSet<>();
                     for (URLPart part : parts) {
-                        tokens.addAll(tokenizeMalformed(urlString, part));
+                        for (Token token : tokenizeMalformed(urlString, part)) {
+                            if (part != URLPart.WHOLE) {
+                                tokens.add(token);
+                                tokenStrings.add(token.getToken());
+                            } else if (!tokenStrings.contains(token.getToken())) {
+                                // ensure that we are not adding a duplicate token when tokenize the whole malformed URL
+                                tokens.add(token);
+                            }
+                        }
                     }
                     return tokens;
                 }
