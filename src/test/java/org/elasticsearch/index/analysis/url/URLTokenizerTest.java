@@ -231,6 +231,25 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
     }
 
 
+    @Test
+    public void testTokenizeMalformedNoPartSpecified() throws Exception {
+        URLTokenizer tokenizer = createTokenizer("example.com");
+        tokenizer.setAllowMalformed(true);
+        tokenizer.setTokenizeMalformed(true);
+        tokenizer.setTokenizeHost(false);
+        assertTokenStreamContents(tokenizer, stringArray("example.com"));
+    }
+
+
+    @Test
+    public void testAllowMalformedNoPartsSpecified() throws Exception {
+        URLTokenizer tokenizer = createTokenizer("example.com");
+        tokenizer.setAllowMalformed(true);
+        tokenizer.setTokenizeHost(false);
+        assertTokenStreamContents(tokenizer, stringArray("example.com"));
+    }
+
+
     private URLTokenizer createTokenizer(String input, URLPart... parts) throws IOException {
         URLTokenizer tokenizer = new URLTokenizer();
         if (parts != null) {

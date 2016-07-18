@@ -190,25 +190,38 @@ public final class URLTokenizer extends Tokenizer {
         } catch (MalformedURLException e) {
             if (allowMalformed) {
                 if (tokenizeMalformed && parts != null && !parts.isEmpty()) {
-                    List<Token> tokens = new ArrayList<>();
-                    Set<String> tokenStrings = new HashSet<>();
-                    for (URLPart part : parts) {
-                        for (Token token : tokenizeMalformed(urlString, part)) {
-                            if (part != URLPart.WHOLE) {
-                                tokens.add(token);
-                                tokenStrings.add(token.getToken());
-                            } else if (!tokenStrings.contains(token.getToken())) {
-                                // ensure that we are not adding a duplicate token when tokenize the whole malformed URL
-                                tokens.add(token);
-                            }
-                        }
-                    }
-                    return tokens;
+                    return tokenizePartsMalformed(urlString, parts);
                 }
                 return tokenizeMalformed(urlString, (parts == null || parts.isEmpty()) ? null : URLPart.WHOLE);
             }
             throw new IOException("Malformed URL: " + urlString, e);
         }
+    }
+
+
+    /**
+     * Tokenize all given parts of the given URL while ensuring that duplicate tokens are not created when the whole
+     * malformed URL is is identical to a single part token.
+     * @param urlString the malformed URL to be tokenized
+     * @param parts the desired {@link URLPart}s
+     * @return a list of {@link Token}s
+     * @throws IOException
+     */
+    private List<Token> tokenizePartsMalformed(String urlString, List<URLPart> parts) throws IOException {
+        List<Token> tokens = new ArrayList<>();
+        Set<String> tokenStrings = new HashSet<>();
+        for (URLPart part : parts) {
+            for (Token token : tokenizeMalformed(urlString, part)) {
+                if (part != URLPart.WHOLE) {
+                    tokens.add(token);
+                    tokenStrings.add(token.getToken());
+                } else if (!tokenStrings.contains(token.getToken())) {
+                    // ensure that we are not adding a duplicate token when tokenize the whole malformed URL
+                    tokens.add(token);
+                }
+            }
+        }
+        return tokens;
     }
 
 
@@ -222,11 +235,7 @@ public final class URLTokenizer extends Tokenizer {
     private List<Token> tokenizeMalformed(String url, URLPart part) throws IOException {
         if (part == null) {
             // No part is specified. Tokenize all parts.
-            List<Token> tokens = new ArrayList<>();
-            for (URLPart urlPart : URLPart.values()) {
-                tokens.addAll(tokenizeMalformed(url, urlPart));
-            }
-            return tokens;
+            return tokenizePartsMalformed(url, ImmutableList.copyOf(URLPart.values()));
         }
         Optional<String> partOptional = getPart(url, part);
         if (!partOptional.isPresent() || partOptional.get().equals("")) {
