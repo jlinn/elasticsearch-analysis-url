@@ -50,7 +50,8 @@
             "url_port_malformed": {
                 "type": "url",
                 "part": "port",
-                "allow_malformed": true
+                "allow_malformed": true,
+                "tokenize_malformed": true
             },
             "url_host_passthrough": {
                 "type": "url",

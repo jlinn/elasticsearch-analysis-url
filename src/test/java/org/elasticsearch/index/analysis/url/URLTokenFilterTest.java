@@ -10,6 +10,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import static org.elasticsearch.index.analysis.url.IsTokenStreamWithTokenAndPosition.hasTokenAtOffset;
+
 public class URLTokenFilterTest extends BaseTokenStreamTestCase {
     public static final String TEST_HTTP_URL = "http://www.foo.bar.com:9200/index_name/type_name/_search.html?foo=bar&baz=bat#tag";
     public static final String TEST_HTTP_URL2 = "http://www.foo.bar.com";
@@ -27,6 +29,13 @@ public class URLTokenFilterTest extends BaseTokenStreamTestCase {
     @Test
     public void testFilterHost() throws IOException {
         assertTokenStreamContents(createFilter(TEST_HTTP_URL, URLPart.HOST).setTokenizeHost(false), "www.foo.bar.com");
+
+        URLTokenFilter filter = createFilter(TEST_HTTP_URL, URLPart.HOST)
+                .setUrlDeocde(false);
+        assertThat(filter, hasTokenAtOffset("www.foo.bar.com", 7, 22));
+        assertThat(filter, hasTokenAtOffset("foo.bar.com", 11, 22));
+        assertThat(filter, hasTokenAtOffset("bar.com", 15, 22));
+        assertThat(filter, hasTokenAtOffset("com", 19, 22));
     }
 
     @Test
@@ -77,12 +86,15 @@ public class URLTokenFilterTest extends BaseTokenStreamTestCase {
     @Test
     public void testMalformed() throws IOException {
         URLTokenFilter filter = createFilter("http://:::::::/baz", URLPart.PROTOCOL, false, true);
+        filter.setTokenizeMalformed(true);
         assertTokenStreamContents(filter, "http");
 
         filter = createFilter("foo.com/bar?baz=bat", URLPart.QUERY, false, true);
+        filter.setTokenizeMalformed(true);
         assertTokenStreamContents(filter, "baz=bat");
 
         filter = createFilter("baz.com:3456/foo", URLPart.PORT, false, true);
+        filter.setTokenizeMalformed(true);
         assertTokenStreamContents(filter, "3456");
     }
 
