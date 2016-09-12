@@ -9,6 +9,7 @@ This plugin enables URL tokenization and token filtering by URL part.
 
 | Elasticsearch Version | Plugin Version |
 |-----------------------|----------------|
+| 2.4.0 | 2.4.0.0 |
 | 2.3.5 | 2.3.5.0 |
 | 2.3.4 | 2.3.4.3 |
 | 2.3.3 | 2.3.3.5 |
@@ -28,7 +29,7 @@ This plugin enables URL tokenization and token filtering by URL part.
 
 ## Installation
 ```bash
-bin/plugin install https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v2.3.5.0/elasticsearch-analysis-url-2.3.5.0.zip
+bin/plugin install https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v2.4.0.0/elasticsearch-analysis-url-2.4.0.0.zip
 ```
 
 ## Usage
