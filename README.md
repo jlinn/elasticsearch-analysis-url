@@ -9,6 +9,7 @@ This plugin enables URL tokenization and token filtering by URL part.
 
 | Elasticsearch Version | Plugin Version |
 |-----------------------|----------------|
+| 2.4.1 | 2.4.1.0 |
 | 2.4.0 | 2.4.0.0 |
 | 2.3.5 | 2.3.5.0 |
 | 2.3.4 | 2.3.4.3 |
@@ -29,12 +30,12 @@ This plugin enables URL tokenization and token filtering by URL part.
 
 ## Installation
 ```bash
-bin/plugin install https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v2.4.0.0/elasticsearch-analysis-url-2.4.0.0.zip
+bin/plugin install https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v2.4.1.0/elasticsearch-analysis-url-2.4.1.0.zip
 ```
 
 ## Usage
 ### URL Tokenizer
-#### Options: 
+#### Options:
 * `part`: Defaults to `null`. If left `null`, all URL parts will be tokenized, and some additional tokens (`host:port` and `protocol://host`) will be included. Can be either a string (single URL part) or an array of multiple URL parts. Options are `whole`, `protocol`, `host`, `port`, `path`, `query`, and `ref`.
 * `url_decode`: Defaults to `false`. If `true`, URL tokens will be URL decoded.
 * `allow_malformed`: Defaults to `false`. If `true`, malformed URLs will not be rejected, but will be passed through without being tokenized.
