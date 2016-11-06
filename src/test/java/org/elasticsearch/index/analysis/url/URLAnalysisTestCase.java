@@ -8,6 +8,7 @@ import org.elasticsearch.test.StreamsUtils;
 import org.junit.Before;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public abstract class URLAnalysisTestCase extends ESIntegTestCase {
 
     @Override
     protected Collection<Class<? extends Plugin>> nodePlugins() {
-        return pluginList(AnalysisURLPlugin.class);
+        return Collections.singletonList(AnalysisURLPlugin.class);
     }
 
     /**

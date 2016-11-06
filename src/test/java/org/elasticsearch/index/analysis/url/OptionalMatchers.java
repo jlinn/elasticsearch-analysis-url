@@ -92,8 +92,9 @@ public class OptionalMatchers {
         @Override
         protected void describeMismatchSafely(Optional<T> item, Description mismatchDescription) {
             if (item.isPresent()) {
-                mismatchDescription.appendText("value ");
-                matcher.describeMismatch(item.get(), mismatchDescription);
+                mismatchDescription.appendText("value ")
+                        .appendValue(item.get());
+                matcher.describeTo(mismatchDescription);
             } else {
                 mismatchDescription.appendText("was <Empty>");
             }

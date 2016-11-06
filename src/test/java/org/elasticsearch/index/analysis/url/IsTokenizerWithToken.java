@@ -1,11 +1,12 @@
 package org.elasticsearch.index.analysis.url;
 
-import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.TypeSafeMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -14,7 +15,7 @@ import java.io.IOException;
  * 8/2/2015
  */
 public class IsTokenizerWithToken extends TypeSafeMatcher<Tokenizer> {
-    private static final Logger log = Logger.getLogger(IsTokenizerWithToken.class);
+    private static final Logger log = LoggerFactory.getLogger(IsTokenizerWithToken.class);
 
     private final String token;
 

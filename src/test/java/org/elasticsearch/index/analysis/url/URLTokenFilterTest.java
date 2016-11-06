@@ -1,9 +1,9 @@
 package org.elasticsearch.index.analysis.url;
 
 import org.apache.lucene.analysis.BaseTokenStreamTestCase;
+import org.apache.lucene.analysis.CannedTokenStream;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.miscellaneous.SingleTokenTokenStream;
 import org.elasticsearch.index.analysis.URLPart;
 import org.junit.Test;
 
@@ -33,8 +33,14 @@ public class URLTokenFilterTest extends BaseTokenStreamTestCase {
         URLTokenFilter filter = createFilter(TEST_HTTP_URL, URLPart.HOST)
                 .setUrlDeocde(false);
         assertThat(filter, hasTokenAtOffset("www.foo.bar.com", 7, 22));
+        filter = createFilter(TEST_HTTP_URL, URLPart.HOST)
+                .setUrlDeocde(false);
         assertThat(filter, hasTokenAtOffset("foo.bar.com", 11, 22));
+        filter = createFilter(TEST_HTTP_URL, URLPart.HOST)
+                .setUrlDeocde(false);
         assertThat(filter, hasTokenAtOffset("bar.com", 15, 22));
+        filter = createFilter(TEST_HTTP_URL, URLPart.HOST)
+                .setUrlDeocde(false);
         assertThat(filter, hasTokenAtOffset("com", 19, 22));
     }
 
@@ -111,7 +117,7 @@ public class URLTokenFilterTest extends BaseTokenStreamTestCase {
         if (url != null) {
             length = url.length();
         }
-        return new URLTokenFilter(new SingleTokenTokenStream(new Token(url, 0, length)), part, urlDecode, allowMalformed);
+        return new URLTokenFilter(new CannedTokenStream(new Token(url, 0, length)), part, urlDecode, allowMalformed);
     }
 
     private static void assertTokenStreamContents(TokenStream in, String output) throws IOException {

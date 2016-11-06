@@ -1,12 +1,13 @@
 package org.elasticsearch.index.analysis.url;
 
-import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.TypeSafeMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -15,7 +16,7 @@ import java.io.IOException;
  * 8/2/2015
  */
 public class IsTokenStreamWithTokenAndPosition extends TypeSafeMatcher<TokenStream> {
-    private static final Logger log = Logger.getLogger(IsTokenStreamWithTokenAndPosition.class);
+    private static final Logger log = LoggerFactory.getLogger(IsTokenStreamWithTokenAndPosition.class);
 
     private final String token;
     private final int start;

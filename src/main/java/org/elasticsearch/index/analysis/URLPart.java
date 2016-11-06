@@ -24,5 +24,5 @@ public enum URLPart {
         throw new IllegalArgumentException(String.format("Unrecognized URL part: %s", part));
     }
 
-    public static Ordering<URLPart> PART_ORDER = Ordering.explicit(PROTOCOL, HOST, PORT, PATH, REF, QUERY, WHOLE);
+    public static final Ordering<URLPart> PART_ORDER = Ordering.explicit(PROTOCOL, HOST, PORT, PATH, REF, QUERY, WHOLE);
 }

@@ -60,7 +60,7 @@ public class URLTokenFilterIntegrationTest extends URLAnalysisTestCase {
 
         SearchHits hits = client()
                 .prepareSearch(INDEX)
-                .setQuery(QueryBuilders.missingQuery("http_malformed.port"))
+                .setQuery(QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery("http_malformed.port")))
                 .get()
                 .getHits();
         assertEquals("found a doc missing http_malformed.port", 1, hits.getTotalHits());

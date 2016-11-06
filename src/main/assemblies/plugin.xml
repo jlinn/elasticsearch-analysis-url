@@ -8,13 +8,13 @@
     <files>
         <file>
             <source>src/main/resources/plugin-descriptor.properties</source>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>/elasticsearch/</outputDirectory>
             <filtered>true</filtered>
         </file>
     </files>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/elasticsearch/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <excludes>
@@ -22,11 +22,19 @@
             </excludes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/elasticsearch/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <includes>
                 <include>${project.name}-${project.version}.jar</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>/elasticsearch/</outputDirectory>
+            <useProjectArtifact>true</useProjectArtifact>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <includes>
+                <include>com.google.guava:guava</include>
             </includes>
         </dependencySet>
     </dependencySets>

@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.elasticsearch.index.analysis.url.IsTokenStreamWithTokenAndPosition.hasTokenAtOffset;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 
 /**
  * Joe Linn

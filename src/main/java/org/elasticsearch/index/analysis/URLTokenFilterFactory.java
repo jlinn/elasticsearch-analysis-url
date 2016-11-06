@@ -1,22 +1,19 @@
 package org.elasticsearch.index.analysis;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import org.apache.lucene.analysis.TokenStream;
-import org.elasticsearch.common.inject.Inject;
-import org.elasticsearch.common.inject.assistedinject.Assisted;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.index.Index;
+import org.elasticsearch.env.Environment;
+import org.elasticsearch.index.IndexSettings;
 import org.elasticsearch.index.analysis.url.URLTokenFilter;
-import org.elasticsearch.index.settings.IndexSettingsService;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Joe Linn
  * 1/17/2015
  */
-@AnalysisSettingsRequired
 public class URLTokenFilterFactory extends AbstractTokenFilterFactory {
     private final List<URLPart> parts;
     private final boolean urlDecode;
@@ -27,17 +24,13 @@ public class URLTokenFilterFactory extends AbstractTokenFilterFactory {
     private final boolean tokenizeMalformed;
     private final boolean passthrough;
 
-    @Inject
-    public URLTokenFilterFactory(Index index, IndexSettingsService indexSettings, @Assisted String name, @Assisted Settings settings) {
-        super(index, indexSettings.indexSettings(), name, settings);
 
-        this.parts = FluentIterable.of(settings.getAsArray("part", new String[]{"whole"}))
-                .transform(new Function<String, URLPart>() {
-                    @Override
-                    public URLPart apply(String input) {
-                        return URLPart.fromString(input);
-                    }
-                }).toList();
+    public URLTokenFilterFactory(IndexSettings indexSettings, Environment environment, String name, Settings settings) {
+        super(indexSettings, name, settings);
+
+        this.parts = Arrays.stream(settings.getAsArray("part", new String[]{"whole"}))
+                .map(URLPart::fromString)
+                .collect(Collectors.toList());
 
         this.urlDecode = settings.getAsBoolean("url_decode", false);
         this.tokenizeHost = settings.getAsBoolean("tokenize_host", true);
@@ -47,6 +40,7 @@ public class URLTokenFilterFactory extends AbstractTokenFilterFactory {
         this.tokenizeMalformed = settings.getAsBoolean("tokenize_malformed", false);
         this.passthrough = settings.getAsBoolean("passthrough", false);
     }
+
 
     @Override
     public TokenStream create(TokenStream tokenStream) {
