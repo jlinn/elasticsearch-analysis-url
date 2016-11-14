@@ -1,19 +1,27 @@
 package org.elasticsearch.index.analysis;
 
-import com.google.common.collect.Ordering;
-
 /**
  * Joe Linn
  * 1/17/2015
  */
 public enum URLPart {
-    PROTOCOL,
-    HOST,
-    PORT,
-    PATH,
-    REF,
-    QUERY,
-    WHOLE;
+    PROTOCOL((short) 1),
+    HOST((short) 2),
+    PORT((short) 3),
+    PATH((short) 4),
+    REF((short) 5),
+    QUERY((short) 6),
+    WHOLE((short) 7);
+
+    private final short order;
+
+    URLPart(short order) {
+        this.order = order;
+    }
+
+    public short getOrder() {
+        return order;
+    }
 
     public static URLPart fromString(String part) {
         for (URLPart urlPart : URLPart.values()) {
@@ -23,6 +31,4 @@ public enum URLPart {
         }
         throw new IllegalArgumentException(String.format("Unrecognized URL part: %s", part));
     }
-
-    public static final Ordering<URLPart> PART_ORDER = Ordering.explicit(PROTOCOL, HOST, PORT, PATH, REF, QUERY, WHOLE);
 }

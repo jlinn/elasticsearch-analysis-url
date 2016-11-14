@@ -1,8 +1,6 @@
 package org.elasticsearch.index.analysis.url;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.net.InetAddresses;
 import org.apache.lucene.analysis.Tokenizer;
@@ -14,6 +12,7 @@ import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 import org.apache.lucene.util.AttributeFactory;
 import org.elasticsearch.index.analysis.URLPart;
+import org.elasticsearch.index.analysis.URLPartComparator;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -31,7 +30,6 @@ import static org.elasticsearch.index.analysis.url.URLUtils.getPart;
  * 7/30/2015
  */
 public final class URLTokenizer extends Tokenizer {
-    public static final String NAME = "url";
 
     /**
      * If set, only the given part of the url will be tokenized.
@@ -93,13 +91,14 @@ public final class URLTokenizer extends Tokenizer {
 
     public void setParts(List<URLPart> parts) {
         if (parts != null) {
-            this.parts = URLPart.PART_ORDER.sortedCopy(parts);
+            parts.sort(new URLPartComparator());
+            this.parts = parts;
         }
     }
 
     public void setPart(URLPart part) {
         if (part != null) {
-            this.parts = ImmutableList.of(part);
+            this.parts = Collections.singletonList(part);
         }
     }
 
@@ -180,7 +179,7 @@ public final class URLTokenizer extends Tokenizer {
                 return tokens;
             }
             // No part is specified. Tokenize all parts.
-            Set<Token> tokens = new HashSet<>();
+            Set<Token> tokens = new LinkedHashSet<>();
             for (URLPart urlPart : URLPart.values()) {
                 tokens.addAll(tokenize(url, urlPart));
             }
@@ -202,7 +201,7 @@ public final class URLTokenizer extends Tokenizer {
      * Tokenize all given parts of the given URL while ensuring that duplicate tokens are not created when the whole
      * malformed URL is is identical to a single part token.
      * @param urlString the malformed URL to be tokenized
-     * @param parts the desired {@link URLPart}s
+     * @param parts the desired {@link URLPart}s in proper part order
      * @return a list of {@link Token}s
      * @throws IOException
      */
@@ -214,8 +213,8 @@ public final class URLTokenizer extends Tokenizer {
                 if (part != URLPart.WHOLE) {
                     tokens.add(token);
                     tokenStrings.add(token.getToken());
-                } else if (!tokenStrings.contains(token.getToken())) {
-                    // ensure that we are not adding a duplicate token when tokenize the whole malformed URL
+                } else if (tokenStrings.isEmpty()) {
+                    // If we couldn't tokenize any of the parts, add the whole thing.
                     tokens.add(token);
                 }
             }
@@ -234,7 +233,9 @@ public final class URLTokenizer extends Tokenizer {
     private List<Token> tokenizeMalformed(String url, URLPart part) throws IOException {
         if (part == null) {
             // No part is specified. Tokenize all parts.
-            return tokenizePartsMalformed(url, ImmutableList.copyOf(URLPart.values()));
+            List<URLPart> urlParts = Arrays.asList(URLPart.values());
+            urlParts.sort(new URLPartComparator());
+            return tokenizePartsMalformed(url, urlParts);
         }
         Optional<String> partOptional = getPart(url, part);
         if (!partOptional.isPresent() || partOptional.get().equals("")) {
@@ -257,12 +258,12 @@ public final class URLTokenizer extends Tokenizer {
             case QUERY:
                 return getQueryTokens(url, partStringRaw, partString);
             case PROTOCOL:
-                return ImmutableList.of(new Token(partString, part, start, partString.length()));
+                return Collections.singletonList(new Token(partString, part, start, partString.length()));
             case WHOLE:
-                return ImmutableList.of(new Token(url, URLPart.WHOLE, 0, url.length() - 1));
+                return Collections.singletonList(new Token(url, URLPart.WHOLE, 0, url.length() - 1));
             default:
         }
-        return ImmutableList.of(new Token(partString, part, start, end));
+        return Collections.singletonList(new Token(partString, part, start, end));
     }
 
 
@@ -323,7 +324,7 @@ public final class URLTokenizer extends Tokenizer {
                 return getRefTokens(url, partStringRaw, partString);
             default:
         }
-        return ImmutableList.of(new Token(partString, part, start, end));
+        return Collections.singletonList(new Token(partString, part, start, end));
     }
 
 
@@ -352,7 +353,7 @@ public final class URLTokenizer extends Tokenizer {
         int start = getStartIndex(url, partStringRaw);
         if (!tokenizeHost || InetAddresses.isInetAddress(partString)) {
             int end = getEndIndex(start, partStringRaw);
-            return ImmutableList.of(new Token(partString, URLPart.HOST, start, end));
+            return Collections.singletonList(new Token(partString, URLPart.HOST, start, end));
         }
         return tokenize(URLPart.HOST, addReader(new ReversePathHierarchyTokenizer('.', '.'), new StringReader(partString)), start);
     }
@@ -374,7 +375,7 @@ public final class URLTokenizer extends Tokenizer {
             start++;    // account for :
             end = getEndIndex(start, port);
         }
-        return ImmutableList.of(new Token(port, URLPart.PORT, start, end));
+        return Collections.singletonList(new Token(port, URLPart.PORT, start, end));
     }
 
 
@@ -387,7 +388,7 @@ public final class URLTokenizer extends Tokenizer {
         int start = getStartIndex(url, partStringRaw);
         if (!tokenizePath) {
             int end = getEndIndex(start, partStringRaw);
-            return ImmutableList.of(new Token(partString, URLPart.PATH, start, end));
+            return Collections.singletonList(new Token(partString, URLPart.PATH, start, end));
         }
         return tokenize(URLPart.PATH, addReader(new PathHierarchyTokenizer('/', '/'), new StringReader(partString)), start);
     }
@@ -401,7 +402,7 @@ public final class URLTokenizer extends Tokenizer {
     private List<Token> getRefTokens(String url, String partStringRaw, String partString) {
         int start = getStartIndex(url, "#" + partStringRaw) + 1;
         int end = url.length();
-        return ImmutableList.of(new Token(partString, URLPart.REF, start, end));
+        return Collections.singletonList(new Token(partString, URLPart.REF, start, end));
     }
 
 
@@ -414,7 +415,7 @@ public final class URLTokenizer extends Tokenizer {
         int start = getStartIndex(url, partStringRaw);
         if (!tokenizeQuery) {
             int end = getEndIndex(start, partStringRaw);
-            return ImmutableList.of(new Token(partString, URLPart.QUERY, start, end));
+            return Collections.singletonList(new Token(partString, URLPart.QUERY, start, end));
         }
         return tokenize(URLPart.QUERY, addReader(new PatternTokenizer(QUERY_SEPARATOR, -1), new StringReader(partString)), start);
     }

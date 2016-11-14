@@ -38,6 +38,10 @@
                     "analyzer": "url_port_malformed"
                 }
             }
+        },
+        "url_highlight_test": {
+            "type": "string",
+            "analyzer": "url_highlight_test"
         }
     }
 }

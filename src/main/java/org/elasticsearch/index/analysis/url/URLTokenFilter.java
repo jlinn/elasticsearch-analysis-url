@@ -1,6 +1,5 @@
 package org.elasticsearch.index.analysis.url;
 
-import com.google.common.collect.ImmutableList;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.path.PathHierarchyTokenizer;
@@ -15,6 +14,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -74,7 +74,7 @@ public final class URLTokenFilter extends TokenFilter {
     public URLTokenFilter(TokenStream input, URLPart part, boolean urlDecode, boolean allowMalformed, boolean passthrough) {
         super(input);
         if (part != null) {
-            this.parts = ImmutableList.of(part);
+            this.parts = Collections.singletonList(part);
         } else {
             parts = null;
         }
@@ -148,7 +148,7 @@ public final class URLTokenFilter extends TokenFilter {
             } catch (IOException e) {
                 if (e.getMessage().contains("Malformed URL")) {
                     if (allowMalformed) {
-                        tokens = ImmutableList.of(new Token(urlString, URLPart.WHOLE, 0, urlString.length()));
+                        tokens = Collections.singletonList(new Token(urlString, URLPart.WHOLE, 0, urlString.length()));
                     } else {
                         throw new MalformedURLException("Malformed URL: " + urlString);
                     }

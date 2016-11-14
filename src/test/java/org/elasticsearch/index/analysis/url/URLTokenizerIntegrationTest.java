@@ -1,14 +1,23 @@
 package org.elasticsearch.index.analysis.url;
 
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.text.Text;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 
 /**
@@ -38,6 +47,36 @@ public class URLTokenizerIntegrationTest extends URLAnalysisTestCase {
         List<AnalyzeResponse.AnalyzeToken> tokens = analyzeURL("http://foo.bar.com", "tokenizer_url_all_malformed");
         assertThat(tokens, notNullValue());
         assertThat(tokens, hasSize(7));
+    }
+
+
+    @Test
+    public void testHighlight() throws Exception {
+        final String field = "url_highlight_test";
+        Map<String, String> docContent = new HashMap<>();
+        final String url = "http://www.foo.bar.com:8080/baz/bat?bob=blah";
+        docContent.put(field, url);
+        client().prepareIndex(INDEX, TYPE).setSource(docContent).get();
+        refresh(INDEX);
+
+        SearchResponse response = client().prepareSearch(INDEX).setQuery(QueryBuilders.matchQuery(field, "www.foo.bar.com:8080"))
+                .highlighter(new HighlightBuilder().preTags("<b>").postTags("</b>").field("*").forceSource(true))
+                .get();
+
+        SearchHit[] hits = response.getHits().getHits();
+        assertThat(hits.length, equalTo(1));
+
+        SearchHit hit = hits[0];
+        Map<String, Object> source = hit.getSource();
+        assertThat(source.size(), equalTo(1));
+        assertThat(source, hasKey(field));
+        assertThat("URL was stored correctly", source.get(field), equalTo(url));
+        assertThat(hit.highlightFields(), hasKey(field));
+        HighlightField highlightField = hit.highlightFields().get(field);
+        Text[] fragments = highlightField.getFragments();
+        assertThat(fragments.length, equalTo(1));
+        Text fragment = fragments[0];
+        assertThat("URL was highlighted correctly", fragment.string(), equalTo("http://<b>www.foo.bar.com</b>:<b>8080</b>/baz/bat?bob=blah"));
     }
 
 

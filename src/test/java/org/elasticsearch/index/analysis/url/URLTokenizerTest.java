@@ -1,6 +1,6 @@
 package org.elasticsearch.index.analysis.url;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.apache.lucene.analysis.BaseTokenStreamTestCase;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -250,10 +250,36 @@ public class URLTokenizerTest extends BaseTokenStreamTestCase {
     }
 
 
+    @Test
+    public void testTokenizeSpecial() throws Exception {
+        final String url = "http://www.foo.bar.com:8080/baz/bat?bob=blah";
+        URLTokenizer tokenizer = createEverythingTokenizer(url);
+        assertThat(tokenizer, hasTokenAtOffset("www.foo.bar.com:8080", 7, 27));
+        tokenizer = createEverythingTokenizer(url);
+        assertThat(tokenizer, hasTokenAtOffset("www.foo.bar.com", 7, 22));
+        tokenizer = createEverythingTokenizer(url);
+        assertThat(tokenizer, hasTokenAtOffset("foo.bar.com", 11, 22));
+        tokenizer = createEverythingTokenizer(url);
+        assertThat(tokenizer, hasTokenAtOffset("bar.com", 15, 22));
+    }
+
+
+    private URLTokenizer createEverythingTokenizer(String input) throws IOException {
+        URLTokenizer tokenizer = createTokenizer(input);
+        tokenizer.setAllowMalformed(true);
+        tokenizer.setUrlDecode(true);
+        tokenizer.setTokenizeMalformed(true);
+        tokenizer.setTokenizeHost(true);
+        tokenizer.setTokenizePath(true);
+        tokenizer.setTokenizeQuery(true);
+        return tokenizer;
+    }
+
+
     private URLTokenizer createTokenizer(String input, URLPart... parts) throws IOException {
         URLTokenizer tokenizer = new URLTokenizer();
         if (parts != null) {
-            tokenizer.setParts(ImmutableList.copyOf(parts));
+            tokenizer.setParts(Lists.newArrayList(parts));
         }
         tokenizer.setReader(new StringReader(input));
         return tokenizer;

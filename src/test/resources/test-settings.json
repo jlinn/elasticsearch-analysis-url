@@ -25,6 +25,15 @@
                 "type": "url",
                 "allow_malformed": true,
                 "tokenize_malformed": true
+            },
+            "url_highlight_test": {
+                "type": "url",
+                "url_decode": true,
+                "allow_malformed": true,
+                "tokenize_malformed": true,
+                "tokenize_host": true,
+                "tokenize_path": true,
+                "tokenize_query": true
             }
         },
         "filter": {
@@ -113,6 +122,9 @@
             },
             "tokenizer_url_all_malformed": {
                 "tokenizer": "url_all_malformed"
+            },
+            "url_highlight_test": {
+                "tokenizer": "url_highlight_test"
             }
         }
     }

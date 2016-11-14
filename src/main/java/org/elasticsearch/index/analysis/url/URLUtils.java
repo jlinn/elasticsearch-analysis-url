@@ -1,9 +1,9 @@
 package org.elasticsearch.index.analysis.url;
 
-import com.google.common.base.Optional;
 import org.elasticsearch.index.analysis.URLPart;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,11 +62,11 @@ public class URLUtils {
         if (matcher.find()) {
             String group = matcher.group(1);
             if (group == null) {
-                return Optional.absent();
+                return Optional.empty();
             }
             return Optional.of(group);
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
 
@@ -109,10 +109,7 @@ public class URLUtils {
         if (port == -1) {
             // infer port from protocol
             Optional<String> portOptional = portFromProtocol(url.getProtocol());
-            if (portOptional.isPresent()) {
-                return portOptional.get();
-            }
-            return null;
+            return portOptional.orElse(null);
         }
         return String.valueOf(port);
     }
@@ -128,7 +125,7 @@ public class URLUtils {
         if (protocolOptional.isPresent()) {
             return portFromProtocol(protocolOptional.get());
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
 
@@ -141,7 +138,7 @@ public class URLUtils {
         }
         if (port == -1) {
             // port could not be inferred
-            return Optional.absent();
+            return Optional.empty();
         }
         return Optional.of(String.valueOf(port));
     }

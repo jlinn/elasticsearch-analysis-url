@@ -57,4 +57,15 @@ class Token {
         result = 31 * result + end;
         return result;
     }
+
+
+    @Override
+    public String toString() {
+        return "Token{" +
+                "token='" + token + '\'' +
+                ", part=" + part +
+                ", start=" + start +
+                ", end=" + end +
+                '}';
+    }
 }

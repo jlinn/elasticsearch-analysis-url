@@ -1,9 +1,10 @@
 package org.elasticsearch.index.analysis.url;
 
-import com.google.common.base.Optional;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+
+import java.util.Optional;
 
 /**
  * @author Joe Linn
