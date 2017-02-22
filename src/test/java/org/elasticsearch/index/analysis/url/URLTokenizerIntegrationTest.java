@@ -1,6 +1,8 @@
 package org.elasticsearch.index.analysis.url;
 
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -77,6 +79,22 @@ public class URLTokenizerIntegrationTest extends URLAnalysisTestCase {
         assertThat(fragments.length, equalTo(1));
         Text fragment = fragments[0];
         assertThat("URL was highlighted correctly", fragment.string(), equalTo("http://<b>www.foo.bar.com</b>:<b>8080</b>/baz/bat?bob=blah"));
+    }
+
+
+    @Test
+    public void testBulkIndexing() throws Exception {
+        final String field = "bulk_indexing_test";
+        Map<String, String> content;
+        final int numDocs = 100;
+        BulkRequestBuilder bulkBuilder = client().prepareBulk();
+        for (int i = 0; i < numDocs; i++) {
+            content = new HashMap<>();
+            content.put(field, "http://domain" + i + ".com/foo" + i + "/bar.html");
+            bulkBuilder.add(client().prepareIndex(INDEX, TYPE).setSource(content));
+        }
+        BulkResponse bulkResponse = bulkBuilder.get();
+        assertThat(bulkResponse.buildFailureMessage(), bulkResponse.hasFailures(), equalTo(false));
     }
 
 

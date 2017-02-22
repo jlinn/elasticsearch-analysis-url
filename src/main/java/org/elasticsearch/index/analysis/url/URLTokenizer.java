@@ -30,6 +30,7 @@ import static org.elasticsearch.index.analysis.url.URLUtils.getPart;
  * 7/30/2015
  */
 public final class URLTokenizer extends Tokenizer {
+    private static final URLPartComparator PART_COMPARATOR = new URLPartComparator();
 
     /**
      * If set, only the given part of the url will be tokenized.
@@ -91,7 +92,7 @@ public final class URLTokenizer extends Tokenizer {
 
     public void setParts(List<URLPart> parts) {
         if (parts != null) {
-            parts.sort(new URLPartComparator());
+            parts.sort(PART_COMPARATOR);
             this.parts = parts;
         }
     }
@@ -172,11 +173,11 @@ public final class URLTokenizer extends Tokenizer {
         try {
             URL url = new URL(urlString);
             if (parts != null && !parts.isEmpty()) {
-                List<Token> tokens = new ArrayList<>();
+                List<Token> tokensList = new ArrayList<>();
                 for (URLPart part : parts) {
-                    tokens.addAll(tokenize(url, part));
+                    tokensList.addAll(tokenize(url, part));
                 }
-                return tokens;
+                return tokensList;
             }
             // No part is specified. Tokenize all parts.
             Set<Token> tokens = new LinkedHashSet<>();

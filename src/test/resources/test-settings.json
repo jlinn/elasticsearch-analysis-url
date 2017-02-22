@@ -66,6 +66,13 @@
                 "type": "url",
                 "part": "host",
                 "passthrough": "true"
+            },
+            "bulk_indexing_test": {
+                "type": "url",
+                "part": ["protocol", "host", "port", "path", "query", "ref"],
+                "url_decode": true,
+                "allow_malformed": true,
+                "tokenize_malformed": true
             }
         },
         "analyzer": {
@@ -125,6 +132,11 @@
             },
             "url_highlight_test": {
                 "tokenizer": "url_highlight_test"
+            },
+            "bulk_indexing_test": {
+                "type": "custom",
+                "tokenizer": "whitespace",
+                "filter": ["bulk_indexing_test"]
             }
         }
     }

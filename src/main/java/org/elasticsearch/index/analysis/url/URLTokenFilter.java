@@ -176,7 +176,8 @@ public final class URLTokenFilter extends TokenFilter {
     private List<Token> tokenize(String input) throws IOException {
         List<Token> tokens = new ArrayList<>();
         URLTokenizer tokenizer = new URLTokenizer();
-        tokenizer.setParts(parts);
+        // create a copy of the parts list to avoid ConcurrentModificationException when sorting
+        tokenizer.setParts(new ArrayList<>(parts));
         tokenizer.setUrlDecode(urlDeocde);
         tokenizer.setTokenizeHost(tokenizeHost);
         tokenizer.setTokenizePath(tokenizePath);
