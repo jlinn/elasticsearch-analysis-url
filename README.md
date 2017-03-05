@@ -34,14 +34,14 @@ This plugin enables URL tokenization and token filtering by URL part.
 | 1.4.2 | 1.0.0 |
 
 ## Installation
-### v5
+### Elasticsearch v5
 ```bash
-bin/elasticsearch-plugin install https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v5.2.1.1/elasticsearch-analysis-url-5.2.1.1.zip
+bin/elasticsearch-plugin install https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v5.2.2.0/elasticsearch-analysis-url-5.2.2.0.zip
 ```
 
-### pre v5
+### Elasticsearch v2
 ```bash
-bin/plugin install https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v5.2.1.1/elasticsearch-analysis-url-5.2.1.1.zip
+bin/plugin install https://github.com/jlinn/elasticsearch-analysis-url/releases/download/v2.4.3.0/elasticsearch-analysis-url-2.4.3.0.zip
 ```
 
 ## Usage
