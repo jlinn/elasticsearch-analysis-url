@@ -9,6 +9,7 @@ This plugin enables URL tokenization and token filtering by URL part.
 
 | Elasticsearch Version | Plugin Version |
 |-----------------------|----------------|
+| 2.4.6 | 2.4.6.0 |
 | 2.4.5 | 2.4.5.0 |
 | 2.4.4 | 2.4.4.0 |
 | 2.4.3 | 2.4.3.0 |

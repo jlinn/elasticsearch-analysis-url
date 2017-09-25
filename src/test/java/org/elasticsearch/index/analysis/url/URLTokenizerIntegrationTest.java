@@ -34,6 +34,12 @@ public class URLTokenizerIntegrationTest extends URLAnalysisTestCase {
 
 
     @Test
+    public void testAnalyzePartial() throws Exception {
+        assertTokensContain("http://", "tokenizer_url_all", ":80", "http:", "http", "80");
+    }
+
+
+    @Test
     public void testAnalyzeWhole() throws Exception {
         List<AnalyzeResponse.AnalyzeToken> tokens = analyzeURL("http://foo.bar.com", "tokenizer_url_all_malformed");
         assertThat(tokens, notNullValue());
