@@ -504,8 +504,10 @@ public final class URLTokenizer extends Tokenizer {
         // protocol://host
         token = getPart(url, URLPart.PROTOCOL) + "://" + getPart(url, URLPart.HOST);
         start = getStartIndex(url, token);
-        end = getEndIndex(start, token);
-        tokens.add(new Token(token, URLPart.WHOLE, start, end));
+        if (start != -1) {
+            end = getEndIndex(start, token);
+            tokens.add(new Token(token, URLPart.WHOLE, start, end));
+        }
         return tokens;
     }
 
