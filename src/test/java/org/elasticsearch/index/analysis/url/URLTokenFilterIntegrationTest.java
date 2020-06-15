@@ -4,6 +4,7 @@ import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import static org.hamcrest.Matchers.hasSize;
  * Joe Linn
  * 1/17/2015
  */
+@Ignore
 public class URLTokenFilterIntegrationTest extends URLAnalysisTestCase {
 
     @Test

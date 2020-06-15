@@ -7,14 +7,14 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <files>
         <file>
-            <source>src/main/resources/plugin-descriptor.properties</source>
-            <outputDirectory>/elasticsearch/</outputDirectory>
+            <source>${project.basedir}/src/main/resources/plugin-descriptor.properties</source>
+            <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
         </file>
     </files>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/elasticsearch/</outputDirectory>
+            <outputDirectory>/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <excludes>
@@ -22,7 +22,7 @@
             </excludes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>/elasticsearch/</outputDirectory>
+            <outputDirectory>/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <includes>
@@ -30,7 +30,7 @@
             </includes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>/elasticsearch/</outputDirectory>
+            <outputDirectory>/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <includes>
