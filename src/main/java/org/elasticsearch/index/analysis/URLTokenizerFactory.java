@@ -25,7 +25,7 @@ public class URLTokenizerFactory extends AbstractTokenizerFactory {
 
 
     public URLTokenizerFactory(IndexSettings indexSettings, Environment environment, String name, Settings settings) {
-        super(indexSettings, name, settings);
+        super(indexSettings, settings, name);
         List<String> parts = settings.getAsList("part");
         if (parts != null && parts.size() > 0) {
             this.parts = parts.stream()
