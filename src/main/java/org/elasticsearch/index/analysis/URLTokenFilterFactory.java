@@ -1,7 +1,5 @@
 package org.elasticsearch.index.analysis;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import org.apache.lucene.analysis.TokenStream;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.assistedinject.Assisted;
@@ -10,7 +8,9 @@ import org.elasticsearch.index.Index;
 import org.elasticsearch.index.analysis.url.URLTokenFilter;
 import org.elasticsearch.index.settings.IndexSettingsService;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Joe Linn
@@ -31,13 +31,9 @@ public class URLTokenFilterFactory extends AbstractTokenFilterFactory {
     public URLTokenFilterFactory(Index index, IndexSettingsService indexSettings, @Assisted String name, @Assisted Settings settings) {
         super(index, indexSettings.indexSettings(), name, settings);
 
-        this.parts = FluentIterable.of(settings.getAsArray("part", new String[]{"whole"}))
-                .transform(new Function<String, URLPart>() {
-                    @Override
-                    public URLPart apply(String input) {
-                        return URLPart.fromString(input);
-                    }
-                }).toList();
+        this.parts = Arrays.stream(settings.getAsArray("part", new String[]{"whole"}))
+                .map(URLPart::fromString)
+                .collect(Collectors.toList());
 
         this.urlDecode = settings.getAsBoolean("url_decode", false);
         this.tokenizeHost = settings.getAsBoolean("tokenize_host", true);
