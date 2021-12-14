@@ -6,7 +6,6 @@ import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 import org.elasticsearch.index.analysis.url.URLTokenizer;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

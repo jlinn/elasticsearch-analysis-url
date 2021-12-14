@@ -9,6 +9,7 @@ This plugin enables URL tokenization and token filtering by URL part.
 
 | Elasticsearch Version | Plugin Version |
 |-----------------------|----------------|
+| 7.16.1 | 7.16.1.0 |
 | 7.7.1 | 7.7.1.1 |
 | 5.6.3 | 5.6.3.0 |
 | 5.6.1 | 5.6.1.0 |
@@ -138,7 +139,7 @@ Set up your index like so:
             "analyzer": {
                 "url_host": {
                     "filter": ["url_host"],
-                    "tokenizer": "whitespace"
+                    "tokenizer": "whitespace",
                 }
             }
         }

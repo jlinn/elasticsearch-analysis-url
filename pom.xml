@@ -6,7 +6,7 @@
 
     <groupId>org.elasticsearch</groupId>
     <artifactId>elasticsearch-analysis-url</artifactId>
-    <version>7.7.1.1</version>
+    <version>7.16.1.0</version>
     <packaging>jar</packaging>
     <description>Elasticsearch URL token filter plugin</description>
 
@@ -18,10 +18,18 @@
 
     <properties>
         <project.build.sourceEncodint>UTF-8</project.build.sourceEncodint>
-        <elasticsearch.version>7.7.1</elasticsearch.version>
-        <lucene.version>8.5.0</lucene.version>
+        <elasticsearch.version>7.16.1</elasticsearch.version>
+        <lucene.version>9.0.0</lucene.version>
         <hamcrest.version>1.3</hamcrest.version>
-        <guava.version>19.0</guava.version>
+        <guava.version>31.0.1-jre</guava.version>
+        <junit.version>4.13.2</junit.version>
+        <log4j.version>2.16.0</log4j.version>
+        <slf4j.version>1.7.32</slf4j.version>
+        <randomizedtesting.version>2.7.9</randomizedtesting.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <surefire.version>2.22.2</surefire.version>
+        <source-plugin.version>3.2.1</source-plugin.version>
+        <assembly-plugin.version>3.3.0</assembly-plugin.version>
         <tests.output>onerror</tests.output>
         <tests.shuffle>true</tests.shuffle>
         <es.config>elasticsearch.yml</es.config>
@@ -48,7 +56,12 @@
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
             <version>${elasticsearch.version}</version>
-            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch-x-content</artifactId>
+            <version>${elasticsearch.version}</version>
         </dependency>
 
         <dependency>
@@ -59,7 +72,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-all</artifactId>
+                    <artifactId>hamcrest</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>junit</groupId>
@@ -78,7 +91,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -91,14 +104,19 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.9.1</version>
-            <scope>test</scope>
+            <version>${log4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.12</version>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -143,7 +161,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -153,13 +171,13 @@
             <plugin>
                 <groupId>com.carrotsearch.randomizedtesting</groupId>
                 <artifactId>junit4-maven-plugin</artifactId>
-                <version>2.1.11</version>
+                <version>${randomizedtesting.version}</version>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
+                <version>${surefire.version}</version>
                 <configuration>
                     <!-- disable security manager for tests -->
                     <argLine>-Dtests.security.manager=false</argLine>
@@ -169,13 +187,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.4</version>
+                <version>${source-plugin.version}</version>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.5.3</version>
+                <version>${assembly-plugin.version}</version>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <outputDirectory>${project.build.directory}/releases/</outputDirectory>
