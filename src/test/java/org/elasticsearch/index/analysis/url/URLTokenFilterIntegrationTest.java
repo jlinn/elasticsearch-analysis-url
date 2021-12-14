@@ -1,7 +1,7 @@
 package org.elasticsearch.index.analysis.url;
 
 import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
+import org.elasticsearch.action.admin.indices.analyze.AnalyzeAction;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
 import org.junit.Ignore;
@@ -41,7 +41,7 @@ public class URLTokenFilterIntegrationTest extends URLAnalysisTestCase {
 
     @Test
     public void testEmptyString() {
-        List<AnalyzeResponse.AnalyzeToken> tokens = analyzeURL("", "url_protocol");
+        List<AnalyzeAction.AnalyzeToken> tokens = analyzeURL("", "url_protocol");
         assertThat("no tokens", tokens, hasSize(0));
     }
 
@@ -71,7 +71,7 @@ public class URLTokenFilterIntegrationTest extends URLAnalysisTestCase {
 
     @Test
     public void testPassthrough() {
-        List<AnalyzeResponse.AnalyzeToken> tokens = analyzeURL("http://foo.com:9200/foo.bar baz bat.blah", "url_host_passthrough");
+        List<AnalyzeAction.AnalyzeToken> tokens = analyzeURL("http://foo.com:9200/foo.bar baz bat.blah", "url_host_passthrough");
         assertThat(tokens, hasSize(4));
         assertThat(tokens.get(0).getTerm(), equalTo("foo.com"));
         assertThat(tokens.get(1).getTerm(), equalTo("com"));
@@ -94,7 +94,7 @@ public class URLTokenFilterIntegrationTest extends URLAnalysisTestCase {
     }
 
     private void assertURLAnalyzesTo(String url, String analyzer, String expected) {
-        List<AnalyzeResponse.AnalyzeToken> tokens = analyzeURL(url, analyzer);
+        List<AnalyzeAction.AnalyzeToken> tokens = analyzeURL(url, analyzer);
         assertThat("a URL part was parsed", tokens, hasSize(1));
         assertEquals("term value", expected, tokens.get(0).getTerm());
     }

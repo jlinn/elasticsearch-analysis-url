@@ -1,6 +1,6 @@
 package org.elasticsearch.index.analysis.url;
 
-import org.elasticsearch.action.admin.indices.analyze.AnalyzeResponse;
+import org.elasticsearch.action.admin.indices.analyze.AnalyzeAction;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.plugin.analysis.AnalysisURLPlugin;
 import org.elasticsearch.plugins.Plugin;
@@ -40,7 +40,7 @@ public abstract class URLAnalysisTestCase extends ESIntegTestCase {
         Thread.sleep(75);   // Ensure that the shard is available before we start making analyze requests.
     }
 
-    protected List<AnalyzeResponse.AnalyzeToken> analyzeURL(String url, String analyzer) {
+    protected List<AnalyzeAction.AnalyzeToken> analyzeURL(String url, String analyzer) {
         return client().admin().indices().prepareAnalyze(INDEX, url).setAnalyzer(analyzer).get().getTokens();
     }
 }
